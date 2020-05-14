@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "551458823155",
+    "firebase_url": "https://toiletbowl-8e0a0.firebaseio.com",
+    "project_id": "toiletbowl-8e0a0",
+    "storage_bucket": "toiletbowl-8e0a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551458823155:android:270e842ac52ef603a51086",
+        "android_client_info": {
+          "package_name": "com.example.toilet_bowl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551458823155-f6qa7unf0jvnn8fo0om5obiso2r1hblk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.toilet_bowl",
+            "certificate_hash": "74c476714abf0131e4df82820f16f04b70da3f7e"
+          }
+        },
+        {
+          "client_id": "551458823155-hc2llarbki7kescvuk0gpnssim49se63.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF1VDtKNPki8kLV2UcXo7zLHpzEwG6jck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551458823155-hc2llarbki7kescvuk0gpnssim49se63.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
