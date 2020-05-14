@@ -1,14 +1,21 @@
 package com.example.toilet_bowl.model;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
 public class BoardInfo {
     private String title;
     private String content;
     private String uid;
+    private String documentId;
 
-    public BoardInfo(String title, String content, String uid) {
-        this.title = title;
-        this.content = content;
-        this.uid = uid;
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public BoardInfo() {
+
     }
 
     @Override
@@ -17,7 +24,32 @@ public class BoardInfo {
                 "title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", uid='" + uid + '\'' +
+                ", documentId='" + documentId + '\'' +
+                ", date=" + date +
                 '}';
+    }
+
+
+
+    public BoardInfo(String title, String content, String uid, Date date, String documentId) {
+        this.title = title;
+        this.content = content;
+        this.uid = uid;
+        this.documentId = documentId;
+        this.date = date;
+    }
+
+    @ServerTimestamp
+    private Date date;
+
+
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getUid() {
