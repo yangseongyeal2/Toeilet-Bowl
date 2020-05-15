@@ -3,6 +3,7 @@ package com.example.toilet_bowl;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -32,6 +33,11 @@ public class WriteActivity extends AppCompatActivity {
     private TextInputEditText mContents;
     private TextInputLayout mTitleLayout;
     private TextInputLayout mContentsLayOut;
+    private String mTitle_intent;
+    private String mContent_intent;
+    private String uid_intent;
+    private Date date_intent;
+    private String documentId_intent;
 
 
 
@@ -69,12 +75,13 @@ public class WriteActivity extends AppCompatActivity {
                     String contents = mContents.getText().toString();
                     Date date=new Date();
                     String documentId=documentReference.getId();
-                    BoardInfo boardInfo = new BoardInfo(title, contents, uid,date,documentId);
+                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,date,documentId);
 
                     documentReference.set(boardInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getApplicationContext(),"업로드성공",Toast.LENGTH_LONG).show();
+                            setResult( 99);
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -87,10 +94,15 @@ public class WriteActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
+    }
+    @Override
+    protected void onDestroy(){      //액티비티가 종료될 때의 메서드
+        super.onDestroy();
 
 
     }
+
+
+
+
 }

@@ -1,24 +1,24 @@
 package com.example.toilet_bowl;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.util.Log;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.toilet_bowl.Adapter.BoardAdapter;
 import com.example.toilet_bowl.model.BoardInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -35,19 +35,20 @@ public class BoardActivity extends AppCompatActivity {
     private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
     private BoardAdapter mBoardAdapter;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-        Intent intent=getIntent();
-        String nickName=intent.getStringExtra("nickName");
-        String photoUrl=intent.getStringExtra("photoURL");
+//        Intent intent=getIntent();
+//        String nickName=intent.getStringExtra("nickName");
+//        String photoUrl=intent.getStringExtra("photoURL");
         findViewById(R.id.Board_FloatingActionBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent =new Intent(getApplicationContext(),WriteActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,99);
             }
         });
         findViewById(R.id.Board_logoutBtn).setOnClickListener(new View.OnClickListener() {
@@ -59,14 +60,14 @@ public class BoardActivity extends AppCompatActivity {
         mRecyclerView=findViewById(R.id.Board_RecyclerVIew);
         mRecyclerView.setHasFixedSize(true);
         retreive_Testing();
-
-
-
-
-
-
-
-
+        swipeRefreshLayout=findViewById(R.id.Board_SwipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                retreive_Testing();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
     }
     public void retreive_Testing(){
@@ -96,5 +97,21 @@ public class BoardActivity extends AppCompatActivity {
     }
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == 99&&requestCode==99) {
+           Log.d("양성열","리절트 함수 실행");
+
+            retreive_Testing();
+
+        }else if(resultCode == RESULT_CANCELED) {
+
+            Log.d("양성열","실패");
+
+        }
+
     }
 }
