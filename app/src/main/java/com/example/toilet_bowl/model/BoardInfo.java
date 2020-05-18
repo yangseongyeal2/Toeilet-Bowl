@@ -9,13 +9,16 @@ public class BoardInfo {
     private String content;
     private String uid;
     private String documentId;
+    private String deleted_at;
+    
 
-    public String getDocumentId() {
-        return documentId;
-    }
-
-    public BoardInfo() {
-
+    public BoardInfo(String title, String content, String uid, String documentId,  Date date,String deleted_at) {
+        this.title = title;
+        this.content = content;
+        this.uid = uid;
+        this.documentId = documentId;
+        this.deleted_at = deleted_at;
+        this.date = date;
     }
 
     @Override
@@ -25,19 +28,40 @@ public class BoardInfo {
                 ", content='" + content + '\'' +
                 ", uid='" + uid + '\'' +
                 ", documentId='" + documentId + '\'' +
+                ", deleted_at='" + deleted_at + '\'' +
                 ", date=" + date +
                 '}';
     }
 
-
-
-    public BoardInfo(String title, String content, String uid, Date date, String documentId) {
-        this.title = title;
-        this.content = content;
-        this.uid = uid;
+    public void setDocumentId(String documentId) {
         this.documentId = documentId;
-        this.date = date;
     }
+
+    public String getDeleted_at() {
+        return deleted_at;
+    }
+
+    public void setDeleted_at(String deleted_at) {
+        this.deleted_at = deleted_at;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public BoardInfo() {
+
+    }
+
+
+//
+//    public BoardInfo(String title, String content, String uid, Date date, String documentId) {
+//        this.title = title;
+//        this.content = content;
+//        this.uid = uid;
+//        this.documentId = documentId;
+//        this.date = date;
+//    }
 
     @ServerTimestamp
     private Date date;

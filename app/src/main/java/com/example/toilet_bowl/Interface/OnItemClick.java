@@ -1,4 +1,5 @@
 package com.example.toilet_bowl.Interface;
 
-interface OnItemClick {
+public interface OnItemClick {
+    void onClick (String value);
 }

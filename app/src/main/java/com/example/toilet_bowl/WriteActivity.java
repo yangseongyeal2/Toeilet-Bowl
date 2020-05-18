@@ -75,13 +75,13 @@ public class WriteActivity extends AppCompatActivity {
                     String contents = mContents.getText().toString();
                     Date date=new Date();
                     String documentId=documentReference.getId();
-                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,date,documentId);
+                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,documentId,date,"0");
 
                     documentReference.set(boardInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getApplicationContext(),"업로드성공",Toast.LENGTH_LONG).show();
-                            setResult( 99);
+                            setResult( 99);//99보냄
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
