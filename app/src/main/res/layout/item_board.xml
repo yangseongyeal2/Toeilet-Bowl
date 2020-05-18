@@ -55,7 +55,6 @@
             android:id="@+id/item_likeButton_likeButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
-
             android:layout_marginTop="48dp"
             app:anim_scale_factor="2"
             app:circle_end_color="@color/colorAccent"
@@ -64,7 +63,6 @@
             app:dots_secondary_color="@color/colorPrimary"
             app:icon_size="25dp"
             app:icon_type="heart"
-
             app:is_enabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

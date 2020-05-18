@@ -12,6 +12,7 @@ import android.widget.Toast;
 import android.util.Log;
 
 import com.example.toilet_bowl.model.BoardInfo;
+import com.example.toilet_bowl.model.LikeInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +26,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class WriteActivity extends AppCompatActivity {
     private String uid;
@@ -75,13 +78,16 @@ public class WriteActivity extends AppCompatActivity {
                     String contents = mContents.getText().toString();
                     Date date=new Date();
                     String documentId=documentReference.getId();
-                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,documentId,date,"0");
 
+                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,documentId,date,"0");
                     documentReference.set(boardInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getApplicationContext(),"업로드성공",Toast.LENGTH_LONG).show();
                             setResult( 99);//99보냄
+
+                            LikeInfo likeInfo=new LikeInfo("","");
+                            documentReference.collection("Like").document(uid).set(likeInfo);
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {

@@ -3,6 +3,8 @@ package com.example.toilet_bowl.model;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BoardInfo {
     private String title;
@@ -10,7 +12,10 @@ public class BoardInfo {
     private String uid;
     private String documentId;
     private String deleted_at;
-    
+    @ServerTimestamp
+    private Date date;
+
+
 
     public BoardInfo(String title, String content, String uid, String documentId,  Date date,String deleted_at) {
         this.title = title;
@@ -20,6 +25,7 @@ public class BoardInfo {
         this.deleted_at = deleted_at;
         this.date = date;
     }
+
 
     @Override
     public String toString() {
@@ -53,18 +59,6 @@ public class BoardInfo {
 
     }
 
-
-//
-//    public BoardInfo(String title, String content, String uid, Date date, String documentId) {
-//        this.title = title;
-//        this.content = content;
-//        this.uid = uid;
-//        this.documentId = documentId;
-//        this.date = date;
-//    }
-
-    @ServerTimestamp
-    private Date date;
 
 
 

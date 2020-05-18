@@ -18,12 +18,18 @@ import android.widget.Toast;
 import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
+import com.example.toilet_bowl.model.LikeInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,8 +123,65 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
                     popup.show();
 
                 }
-            });
+            });//삭제기능
+            holder.mLikeButton.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButton) {
+//                    Toast.makeText(mContext, "너가 올린 게시물이 아니다", Toast.LENGTH_LONG).show();
+                    final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+                    CollectionReference collectionReference=mStore.collection("Board").document(boardInfo.getDocumentId()).collection("Like");
+                    LikeInfo likeInfo=new LikeInfo(new Date().toString(),"양성열");
+                    collectionReference.document(boardInfo.getUid()).set(likeInfo).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, "업로드 실패", Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(mContext, "업로드성공", Toast.LENGTH_LONG).show();
+//                            holder.mLikecount.setText("g");
+                            Text_like(holder,boardInfo);
+                        }
+                    });
+                }
+                @Override
+                public void unLiked(LikeButton likeButton) {
+//                    Toast.makeText(mContext, "너가 올린 게시물이 아니다", Toast.LENGTH_LONG).show();
+                    final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+                    CollectionReference collectionReference=mStore.collection("Board").document(boardInfo.getDocumentId()).collection("Like");
+                    collectionReference.document(boardInfo.getUid()).delete().addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, "싫어요실패", Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(mContext, "싫어요성공", Toast.LENGTH_LONG).show();
+                            Text_like(holder,boardInfo);
+                        }
+                    });
 
+                }
+            });//좋아요 버튼
+       Text_like(holder,boardInfo);
+
+
+
+    }
+    private void Text_like(@NonNull final BoardViewHolder holder, BoardInfo boardInfo){
+        final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+        CollectionReference collectionReference=mStore.collection("Board").document(boardInfo.getDocumentId()).collection("Like");
+
+        collectionReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            int count=0;
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                count=queryDocumentSnapshots.getDocuments().size();
+                holder.mLikecount.setText(String.valueOf(count));
+            }
+        });
     }
 
     @Override
@@ -130,12 +193,17 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         private TextView mTitleTextView;
         private TextView mContentTextView;
         private ImageView mImageView_menu;
+        private LikeButton mLikeButton;
+        private TextView mLikecount;
 
        public BoardViewHolder(View itemView) {
            super(itemView);
            mTitleTextView=itemView.findViewById(R.id.item_title);
            mContentTextView=itemView.findViewById(R.id.item_contents);
            mImageView_menu=itemView.findViewById(R.id.item_ImageView_menu);
+           mLikeButton=itemView.findViewById(R.id.item_likeButton_likeButton);
+           mLikecount=itemView.findViewById(R.id.item_likecount);
+
            itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                @Override
                public void onClick(View v) {//들어가는 기능 detail로
