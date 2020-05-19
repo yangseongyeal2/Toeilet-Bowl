@@ -4,6 +4,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class BoardInfo {
@@ -14,18 +15,27 @@ public class BoardInfo {
     private String deleted_at;
     @ServerTimestamp
     private Date date;
+    private List<String> uidList;
 
 
 
-    public BoardInfo(String title, String content, String uid, String documentId,  Date date,String deleted_at) {
+    public BoardInfo(String title, String content, String uid, String documentId,  Date date,String deleted_at,List<String> uidList) {
         this.title = title;
         this.content = content;
         this.uid = uid;
         this.documentId = documentId;
         this.deleted_at = deleted_at;
         this.date = date;
+        this.uidList=uidList;
     }
 
+    public List<String> getUidList() {
+        return uidList;
+    }
+
+    public void setUidList(List<String> uidList) {
+        this.uidList = uidList;
+    }
 
     @Override
     public String toString() {

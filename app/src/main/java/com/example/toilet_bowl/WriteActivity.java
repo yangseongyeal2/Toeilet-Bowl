@@ -22,8 +22,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,15 +81,17 @@ public class WriteActivity extends AppCompatActivity {
                     Date date=new Date();
                     String documentId=documentReference.getId();
 
-                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,documentId,date,"0");
+                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,documentId,date,"0", Arrays.asList(""));
                     documentReference.set(boardInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getApplicationContext(),"업로드성공",Toast.LENGTH_LONG).show();
                             setResult( 99);//99보냄
 
-                            LikeInfo likeInfo=new LikeInfo("","");
-                            documentReference.collection("Like").document(uid).set(likeInfo);
+//                            LikeInfo likeInfo=new LikeInfo("","");
+//                            documentReference.collection("Like").document(uid).set(likeInfo);
+             //               documentReference.update("uidList", FieldValue.arrayUnion(uid));
+
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -107,8 +111,6 @@ public class WriteActivity extends AppCompatActivity {
 
 
     }
-
-
 
 
 }

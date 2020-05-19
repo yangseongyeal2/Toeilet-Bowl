@@ -48,6 +48,7 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
 //        Intent intent=getIntent();
 //        String nickName=intent.getStringExtra("nickName");
 //        String photoUrl=intent.getStringExtra("photoURL");
+        Log.v("양성열", "Error getting documents: ");
         findViewById(R.id.Board_FloatingActionBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

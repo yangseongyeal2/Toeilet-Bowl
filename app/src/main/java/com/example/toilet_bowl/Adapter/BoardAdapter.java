@@ -19,8 +19,10 @@ import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
 import com.example.toilet_bowl.model.LikeInfo;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -129,60 +131,29 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
                 public void liked(LikeButton likeButton) {
 //                    Toast.makeText(mContext, "너가 올린 게시물이 아니다", Toast.LENGTH_LONG).show();
                     final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
-                    CollectionReference collectionReference=mStore.collection("Board").document(boardInfo.getDocumentId()).collection("Like");
-                    LikeInfo likeInfo=new LikeInfo(new Date().toString(),"양성열");
-                    collectionReference.document(boardInfo.getUid()).set(likeInfo).addOnFailureListener(new OnFailureListener() {
+
+                    DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
+                    documentReference.update("uidList", FieldValue.arrayUnion(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(mContext, "업로드 실패", Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(mContext, "업로드성공", Toast.LENGTH_LONG).show();
-//                            holder.mLikecount.setText("g");
-                            Text_like(holder,boardInfo);
+                        public void onComplete(@NonNull Task<Void> task) {
+                            holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()));
                         }
                     });
+                  //  holder.mLikecount.setText("좋아요");
                 }
                 @Override
                 public void unLiked(LikeButton likeButton) {
 //                    Toast.makeText(mContext, "너가 올린 게시물이 아니다", Toast.LENGTH_LONG).show();
                     final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
-                    CollectionReference collectionReference=mStore.collection("Board").document(boardInfo.getDocumentId()).collection("Like");
-                    collectionReference.document(boardInfo.getUid()).delete().addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(mContext, "싫어요실패", Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(mContext, "싫어요성공", Toast.LENGTH_LONG).show();
-                            Text_like(holder,boardInfo);
-                        }
-                    });
-
+                    DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
+                    documentReference.update("uidList", FieldValue.arrayRemove(mFirebaseUser.getUid()));
+                    holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
                 }
             });//좋아요 버튼
-       Text_like(holder,boardInfo);
 
-
-
+        holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
     }
-    private void Text_like(@NonNull final BoardViewHolder holder, BoardInfo boardInfo){
-        final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
-        CollectionReference collectionReference=mStore.collection("Board").document(boardInfo.getDocumentId()).collection("Like");
 
-        collectionReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            int count=0;
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                count=queryDocumentSnapshots.getDocuments().size();
-                holder.mLikecount.setText(String.valueOf(count));
-            }
-        });
-    }
 
     @Override
     public int getItemCount() {
