@@ -43,10 +43,6 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     private FirebaseUser mFirebaseUser;
     private OnItemClick mCallback;
 
-//    public BoardAdapter(List<BoardInfo> mBoardList){
-//        this.mBoardInfo=mBoardList;
-//    }
-
 
     public BoardAdapter(List<BoardInfo> mBoardInfo, Context mContext,FirebaseUser mFirebaseUser,OnItemClick listener) {
         this.mBoardInfo = mBoardInfo;
@@ -74,6 +70,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
 
     @Override
     public void onBindViewHolder(@NonNull final BoardViewHolder holder, final int position) {
+
             final BoardInfo boardInfo=mBoardInfo.get(position);
 
             holder.mTitleTextView.setText(boardInfo.getTitle());

@@ -25,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,12 +78,26 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
             }
         });
         //detail
-//        mBoardAdapter.setOnIemlClickListner(new BoardAdapter.OnItemClickListener() {
-//            @Override
-//            public void onitemClick(View v, int pos) {
-//
-//            }
-//        });
+
+
+        FirebaseInstanceId.getInstance().getInstanceId()//토큰가져오기
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("양성열123", "getInstanceId failed", task.getException());
+                            return;
+                        }
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d("양성열123", token.toString());
+//                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
     }
     public void retreive_Testing(){
@@ -104,6 +120,14 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
                         }
                     }
                     mBoardAdapter = new BoardAdapter(mBoardList,BoardActivity.this,firebaseUser,BoardActivity.this);
+                    mBoardAdapter.setOnIemlClickListner(new BoardAdapter.OnItemClickListener() {//Detail 액티비티로 이동
+                        @Override
+                        public void onitemClick(View v, int pos) {
+                            Intent intent=new Intent(getApplicationContext(),DetailActivity.class);
+                            intent.putExtra("DocumentId",mBoardList.get(pos).getDocumentId());
+                            startActivity(intent);
+                        }
+                    });
                     mRecyclerView.setAdapter(mBoardAdapter);
                 } else {
                     Log.d("양성열", "Error getting documents: ", task.getException());
@@ -134,4 +158,5 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
             retreive_Testing();
         }
     }
+
 }
