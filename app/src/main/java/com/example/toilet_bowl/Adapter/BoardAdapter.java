@@ -12,28 +12,25 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
+
 import android.widget.Toast;
 
 import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
-import com.example.toilet_bowl.model.LikeInfo;
+import com.example.toilet_bowl.model.FirebaseUserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -135,6 +132,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()));
+                            mStore.collection("users").document(boardInfo.getUid())//user에있는 좋아요 갯수 늘리기
+                                    .update("likecount",FieldValue.increment(1));
                         }
                     });
                   //  holder.mLikecount.setText("좋아요");
@@ -146,10 +145,13 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
                     DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
                     documentReference.update("uidList", FieldValue.arrayRemove(mFirebaseUser.getUid()));
                     holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
+                    mStore.collection("users").document(boardInfo.getUid())//user에있는 좋아요 갯수 늘리기
+                            .update("likecount",FieldValue.increment(-1));
                 }
             });//좋아요 버튼
 
         holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
+        holder.mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
     }
 
 
@@ -164,6 +166,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         private ImageView mImageView_menu;
         private LikeButton mLikeButton;
         private TextView mLikecount;
+        private TextView mViewcount;
 
        public BoardViewHolder(View itemView) {
            super(itemView);
@@ -172,6 +175,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
            mImageView_menu=itemView.findViewById(R.id.item_ImageView_menu);
            mLikeButton=itemView.findViewById(R.id.item_likeButton_likeButton);
            mLikecount=itemView.findViewById(R.id.item_likecount);
+           mViewcount=itemView.findViewById(R.id.item_viewcount_textView);
 
            itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                @Override

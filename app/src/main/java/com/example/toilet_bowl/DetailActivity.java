@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
@@ -36,6 +38,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -75,11 +78,13 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private String uid;
     private ReplyAdapter mReplyAdapter;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     //device to device notification
     //private RequestQueue mRequesQue;
     private RequestQueue mRequesQue;
     private String URL="https://fcm.googleapis.com/fcm/send";
+    private ProgressDialog loadingbar;
 
 
 
@@ -95,12 +100,75 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         mRequesQue= Volley.newRequestQueue(this);
         TextInputLayout mTextInputLayout = findViewById(R.id.detail_TextIputLayout);
         final String mDocumentId = getIntent().getStringExtra("DocumentId");//mDocumentId는 디테일 정보받아오기
+        swipeRefreshLayout=findViewById(R.id.Board_SwipeRefreshLayout);
+        loadingbar=new ProgressDialog(this);
 
         assert mDocumentId != null;
         documentReference=mStore.collection("Board").document(mDocumentId);
+        initUid();//uid 전역변수로 사용가능
+        upviewcount();//조회수 1올리기
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {//새로고침
+                retreiveReply(documentReference);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+        retreiveDocumentReference(documentReference);
+        //retreiveReply(documentReference);
+        updateReply(documentReference);
+        mRecyclerView.setAdapter(mReplyAdapter);
+        mTextInputLayout.setEndIconOnClickListener(new View.OnClickListener() {//에딧텍스트 업로드
+            @Override
+            public void onClick(View v) {
+                loadingbar.setTitle("Set profile image");
+                loadingbar.setMessage("pleas wait업로딩중");
+                loadingbar.setCanceledOnTouchOutside(false);
+                loadingbar.show();
+                final DocumentReference replyDocumentreference = documentReference.collection("reply").document();
+                if(mEditText.getText()!=null){
+                    String reply_string = mEditText.getText().toString();
+                    assert firebaseUser != null;
+                    ReplyInfo replyInfo=new ReplyInfo(firebaseUser.getUid(),"0",reply_string,new Date(),replyDocumentreference.getId());
+                    //mReplyInfoList.add(replyInfo);
+                    replyDocumentreference.set(replyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "success");
+                            //mDetailAdapter.addItem(replyInfo);
+                            //sendGcm();//푸쉬알림넣기
+                            //subscribe(mDocumentId);
+                            if(!uid.equals(firebaseUser.getUid())){//다른사람이 내 게시판에 글 올릴떄만 알림
+                                sendNotification(mDocumentId);
+                            }
+                            mEditText.setText("");
+                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            assert imm != null;
+                            imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+                           // retreiveReply(documentReference);
+                            loadingbar.dismiss();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            loadingbar.dismiss();
+                        }
+                    });
+                }else{
+                    Toast.makeText(getApplicationContext(),"댓글을 입력하시오",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void upviewcount() {
+        documentReference.update("viewcount", FieldValue.increment(1));
+    }
+
+    private void initUid() {
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {//uid 얻어오기
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
@@ -115,51 +183,8 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
 
             }
         });
-        retreiveDocumentReference(documentReference);
-        //retreiveReply(documentReference);
-        updateReply(documentReference);
-        mRecyclerView.setAdapter(mReplyAdapter);
-
-        mTextInputLayout.setEndIconOnClickListener(new View.OnClickListener() {//에딧텍스트 업로드
-            @Override
-            public void onClick(View v) {
-                final DocumentReference replyDocumentreference = documentReference.collection("reply").document();
-                if(mEditText.getText()!=null){
-                    String reply_string = mEditText.getText().toString();
-                    assert firebaseUser != null;
-                    ReplyInfo replyInfo=new ReplyInfo(firebaseUser.getUid(),"0",reply_string,new Date(),replyDocumentreference.getId());
-                    //mReplyInfoList.add(replyInfo);
-                    replyDocumentreference.set(replyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "success");
-                            //mDetailAdapter.addItem(replyInfo);
-                            //sendGcm();//푸쉬알림넣기
-                            //subscribe(mDocumentId);
-                            sendNotification(mDocumentId);
-                            mEditText.setText("");
-                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                            assert imm != null;
-                            imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
-                            //retreiveReply(documentReference);
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                        }
-                    });
-                }else{
-                    Toast.makeText(getApplicationContext(),"댓글을 입력하시오",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-
-
-
-
     }
+
     private void retreiveDocumentReference(DocumentReference documentReference) {
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -213,6 +238,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                             return;
                         }
                         List<ReplyInfo> list=new ArrayList<>();
+
                         for (QueryDocumentSnapshot doc : value) {
                             ReplyInfo replyInfo=doc.toObject(ReplyInfo.class);
                             Log.d(TAG, replyInfo.getContent());
@@ -236,7 +262,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     public void onClick(String value) {//어댑터에서 클릭후 오는 정보는 여기로옴
         // value this data you receive when increment() / decrement()
         if(value.equals("실시간 댓글 삭제")){
-            retreiveReply(documentReference);
+           // retreiveReply(documentReference);
         }
     }
 

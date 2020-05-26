@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.toilet_bowl.Adapter.BoardAdapter;
 import com.example.toilet_bowl.Interface.OnItemClick;
@@ -65,7 +66,7 @@ public class SerchActivity extends AppCompatActivity implements OnItemClick {
         loadingbar.show();
         mBoardList=new ArrayList<>();
         mStore.collection("Board")
-                .whereEqualTo("content",content)
+                .whereEqualTo("title",content)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -78,6 +79,9 @@ public class SerchActivity extends AppCompatActivity implements OnItemClick {
                         mBoardList.add(boardInfo);
                         Log.d("서치",String.valueOf(mBoardList.size()));
                     }
+                    if(mBoardList.size()==0){//찾는 데이터가 없을떄
+                        Toast.makeText(getApplicationContext(),"데이터가없습니다",Toast.LENGTH_SHORT).show();
+                    }
                     mBoardAdapter=new BoardAdapter(mBoardList,SerchActivity.this, firebaseUser,SerchActivity.this);
                     mBoardAdapter.setOnIemlClickListner(new BoardAdapter.OnItemClickListener() {//Detail 액티비티로 이동
                         @Override
@@ -88,6 +92,7 @@ public class SerchActivity extends AppCompatActivity implements OnItemClick {
                         }
                     });
                     mRecyclerView.setAdapter(mBoardAdapter);
+
                 }else{
                     Log.d("서치","데이터가 없다");
                 }

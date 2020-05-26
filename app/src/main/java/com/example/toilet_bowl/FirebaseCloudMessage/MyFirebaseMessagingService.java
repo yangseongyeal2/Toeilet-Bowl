@@ -51,11 +51,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             body=remoteMessage.getData().get("body");
         }
         // 노티피케이션을 사용했을떄 데이터 가져오기
+
         if (remoteMessage.getNotification() != null) {//앱이 커져있을때 포어 그라운드 노티피케이션을 보냄
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             title=remoteMessage.getNotification().getTitle();
             body=remoteMessage.getNotification().getBody();
         }
+
+
         sendNotification();
     }
 

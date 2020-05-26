@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private void updateUI(FirebaseUser currentUser) {
         Toast.makeText(this,"로그인이 이미 되어있습니다 :"+currentUser.toString(),Toast.LENGTH_LONG).show();
         Intent intent=new Intent(getApplicationContext(),BoardActivity.class);
+        intent.putExtra("자동로그인","자동로그인성공");
         startActivity(intent);
         finish();
     }

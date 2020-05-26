@@ -16,10 +16,42 @@ public class BoardInfo {
     @ServerTimestamp
     private Date date;
     private List<String> uidList;
+    private int viewcount;
 
+    public BoardInfo(String title, String content, String uid, String documentId,  Date date, String deleted_at, List<String> uidList, int viewcount) {
+        this.title = title;
+        this.content = content;
+        this.uid = uid;
+        this.documentId = documentId;
+        this.deleted_at = deleted_at;
+        this.date = date;
+        this.uidList = uidList;
+        this.viewcount = viewcount;
+    }
 
+    @Override
+    public String toString() {
+        return "BoardInfo{" +
+                "title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", uid='" + uid + '\'' +
+                ", documentId='" + documentId + '\'' +
+                ", deleted_at='" + deleted_at + '\'' +
+                ", date=" + date +
+                ", uidList=" + uidList +
+                ", viewcount=" + viewcount +
+                '}';
+    }
 
-    public BoardInfo(String title, String content, String uid, String documentId,  Date date,String deleted_at,List<String> uidList) {
+    public int getViewcount() {
+        return viewcount;
+    }
+
+    public void setViewcount(int viewcount) {
+        this.viewcount = viewcount;
+    }
+
+    public BoardInfo(String title, String content, String uid, String documentId, Date date, String deleted_at, List<String> uidList) {
         this.title = title;
         this.content = content;
         this.uid = uid;
@@ -35,18 +67,6 @@ public class BoardInfo {
 
     public void setUidList(List<String> uidList) {
         this.uidList = uidList;
-    }
-
-    @Override
-    public String toString() {
-        return "BoardInfo{" +
-                "title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", uid='" + uid + '\'' +
-                ", documentId='" + documentId + '\'' +
-                ", deleted_at='" + deleted_at + '\'' +
-                ", date=" + date +
-                '}';
     }
 
     public void setDocumentId(String documentId) {

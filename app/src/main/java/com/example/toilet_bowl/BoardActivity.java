@@ -14,20 +14,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.toilet_bowl.Adapter.BoardAdapter;
 import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.model.BoardInfo;
+import com.example.toilet_bowl.model.FirebaseUserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,17 +101,94 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
             }
         });
         //detail
-        sendTokenToServer();
+        //새로들어온 유저만 토큰을 서버로 보냄.
+        Intent intent=getIntent();
+        String autoflag=intent.getStringExtra("자동로그인");
+        if(autoflag==null){
+            sendUserInfoToServer();
+
+        }else{
+            updateTokenToServer();
+        }
+
+        ///////////////////////////
+
     }
 
-    private void sendTokenToServer() {//토큰 서버에 보내기
+    private void updateTokenToServer() {
         String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mStore.collection("users").document(uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                FirebaseUserModel fu=documentSnapshot.toObject(FirebaseUserModel.class);
+                if(fu.getLikecount()>20){
+                    mStore.collection("users").document(uid).update("nickname","지리는상담사");
+                    sendNotification(uid,"레벨다운","지리는상담사");
+                }else if(fu.getLikecount()>10){
+                    mStore.collection("users").document(uid).update("nickname","약쟁이");
+                    sendNotification(uid,"레벨업","약쟁이로올라감");
+                }
+            }
+        });
+    }
+
+    private void sendNotification(String uid,String title,String content) {
+        RequestQueue mRequesQue= Volley.newRequestQueue(this);
+        String URL="https://fcm.googleapis.com/fcm/send";
+        JSONObject mainObj=new JSONObject();
+        try {
+            mainObj.put("to","/topics/"+uid);
+            JSONObject notificationObj=new JSONObject();
+            notificationObj.put("title",title);
+            notificationObj.put("body",content);
+            mainObj.put("notification",notificationObj);
+
+
+            JsonObjectRequest request=new JsonObjectRequest(com.android.volley.Request.Method.POST, URL,
+                    mainObj,
+                    new com.android.volley.Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                        }
+                    }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String ,String> header=new HashMap<>();
+                    header.put("content-type","application/json");
+                    header.put("authorization","key=AAAAgGWB2_M:APA91bHQEzEfW7ZbMrfZNy_fBF90PEdsoEvOs32Ik-ae9N_3hE-p9HO5GVKy_7yVqw5MMxuCQvNBI4h_r_FkssbkrsjkMkRAFiKsbhq3GoyQHVWfmIjWk9Xf4Bk_89hc4dXFadIdMJeA");
+                    return  header;
+                }
+            };
+
+            mRequesQue.add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendUserInfoToServer() {//토큰 서버에 보내기
+        String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseMessaging.getInstance().subscribeToTopic(uid);//자기 아이디 구독
         String token=FirebaseInstanceId.getInstance().getToken();
         Log.d("Token",token);
+        FirebaseUserModel firebaseUserModel=new FirebaseUserModel(
+                token
+                ,uid
+                ,0
+                ,"눈팅하는새끼");
         assert token != null;
-        Map<String ,Object>map=new HashMap<>();
-        map.put("Token",token);
-        mStore.collection("users").document(uid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        mStore.collection("users")
+                .document(uid)
+                .set(firebaseUserModel)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                // Log.d("시발","업로드성공");
