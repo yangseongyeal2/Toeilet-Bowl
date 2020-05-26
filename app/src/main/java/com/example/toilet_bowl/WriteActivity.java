@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -80,6 +81,7 @@ public class WriteActivity extends AppCompatActivity {
                     String contents = mContents.getText().toString();
                     Date date=new Date();
                     String documentId=documentReference.getId();
+                    FirebaseMessaging.getInstance().subscribeToTopic(documentId);//구독하기
 
                     final BoardInfo boardInfo = new BoardInfo(title, contents, uid,documentId,date,"0", Arrays.asList(""));
                     documentReference.set(boardInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -87,6 +89,8 @@ public class WriteActivity extends AppCompatActivity {
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getApplicationContext(),"업로드성공",Toast.LENGTH_LONG).show();
                             setResult( 99);//99보냄
+
+
 
 //                            LikeInfo likeInfo=new LikeInfo("","");
 //                            documentReference.collection("Like").document(uid).set(likeInfo);

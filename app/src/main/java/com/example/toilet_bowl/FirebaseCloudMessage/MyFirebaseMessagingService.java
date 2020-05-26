@@ -1,4 +1,4 @@
-package com.example.toilet_bowl;
+package com.example.toilet_bowl.FirebaseCloudMessage;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -21,123 +21,77 @@ import androidx.core.app.NotificationCompat;
 
 import android.util.Log;
 
+import com.example.toilet_bowl.BoardActivity;
+import com.example.toilet_bowl.DetailActivity;
+import com.example.toilet_bowl.MainActivity;
+import com.example.toilet_bowl.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.annotations.Since;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private static final String TAG = "FirebaseMsgService";
-
-
-
+    static final String TAG="파이어베이스 메세지 샘플";
+    public String title;
+    public String body;
     @Override
-    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {//메시지가 왔을떄
-        super.onMessageReceived(remoteMessage);
-            original_receive(remoteMessage);
-    }
-
-    private void original_receive(RemoteMessage remoteMessage) {
-        //        Toast.makeText(this,"메시지받음",Toast.LENGTH_LONG).show();
-        String msg,mtitle;
-        msg=remoteMessage.getNotification().getBody();
-        mtitle=remoteMessage.getNotification().getTitle();
-
-        PendingIntent pendingIntent = null;
-        Intent intent = new Intent(this, BoardActivity.class);
-        intent.setAction(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        //푸쉬알람기능 만드는법
-        Notification.Builder noti=new Notification.Builder(this)
-                .setContentTitle("New Push from"+mtitle)
-                .setContentText(msg)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pendingIntent);//패딩인텐트 클릭하면 실행
-        NotificationManager notificationManager=(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0,noti.build());
-        //
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        Log.d(TAG, "From: " + remoteMessage.getFrom());
+        // Check if message contains a data payload.
+        if (remoteMessage.getData().size() > 0) {//앱이 꺼져있을때 백그라운드
+            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            title=remoteMessage.getData().get("title");
+            body=remoteMessage.getData().get("body");
+        }
+        // 노티피케이션을 사용했을떄 데이터 가져오기
+        if (remoteMessage.getNotification() != null) {//앱이 커져있을때 포어 그라운드 노티피케이션을 보냄
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            title=remoteMessage.getNotification().getTitle();
+            body=remoteMessage.getNotification().getBody();
+        }
+        sendNotification();
     }
 
     @Override
-    public void onNewToken(String token) {
-        Log.d(TAG, "Refreshed token: " + token);
-        sendRegistrationToServer(token);
-    }
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+    public void onNewToken(@NonNull String s) {
+        Log.d(TAG, "Refreshed token: " + s);
+        //서버에 토큰을 보내줘야함 만약 토큰이 새로 생겼다면(다시 다운로드 할때)
     }
 
-//    private void sendPushNotification(String message) {
-//
-//        System.out.println("received message : " + message);
-//
-//        try {
-//            JSONObject jsonRootObject = new JSONObject(message);
-//            title = jsonRootObject.getString("title");
-//            contents = jsonRootObject.getString("contents");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        PendingIntent pendingIntent = null;
-//
-//        // 푸시알림 클릭시 액티비티 실행
-//        Intent intent = new Intent(this, MainActivity.class);
-//        intent.setAction(Intent.ACTION_MAIN);
-//        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//        pendingIntent = PendingIntent.getActivity(this, 8888 /* Request code */, intent,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//       // String channelId = getString(R.string.firebase_sender);
-//
-//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//
-//        // 알림 builder 설정
-//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this/*, channelId*/);
-//
-////        Drawable thumb = getResources().getDrawable(R.drawable.app_icon);
-////        Bitmap bmpOrg = ((BitmapDrawable) thumb).getBitmap();
-//
-//        // 일반적인 알림
-//        // SmallIcon은 흰배경에 투명이든, 투명배경과 흰색만 있어야함.
-//        notificationBuilder
-//                .setSmallIcon(R.drawable.ic_menu_black_35dp) // 알림 왼쪽상단 아이콘, 아무거나 쓴다고 뜨지않음, 주의요망 필수
-//                .setColor(getResources().getColor(R.color.colorPrimary))
-//                .setContentTitle(title) // 알림 제목 필수
-//                .setContentText(contents) // 알림 내용 필수
-//                .setAutoCancel(true)
-//                .setSound(defaultSoundUri).setLights(000000255, 500, 2000)
-//                .setContentIntent(pendingIntent); // 클릭시 Intent실행
-//
-//
-//        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-//        PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "powerenglish:TAG");
-//        wakelock.acquire(5000);
-//
-//
-//        notificationManager.notify(8888 /* ID of notification */, notificationBuilder.build());
-  //  }
 
-
-
-
-
-
+    private void sendNotification() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        String channelId = "채널 ID";
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.ic_launcher_background)
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+         //Since android Oreo notification channel is needed.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
+        }
+        assert notificationManager != null;
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
 }

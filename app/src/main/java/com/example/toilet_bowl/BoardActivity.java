@@ -18,6 +18,7 @@ import com.example.toilet_bowl.Adapter.BoardAdapter;
 import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.model.BoardInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +30,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BoardActivity extends AppCompatActivity implements OnItemClick {
     private TextView mNickname;
@@ -41,16 +44,25 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
     private BoardAdapter mBoardAdapter;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageView mSerchImageView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
+        mSerchImageView=findViewById(R.id.board_serch_ImageView);
+        mSerchImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getApplicationContext(),SerchActivity.class);
+                startActivity(intent);
+            }
+        });
 //        Intent intent=getIntent();
 //        String nickName=intent.getStringExtra("nickName");
 //        String photoUrl=intent.getStringExtra("photoURL");
-        Log.v("양성열", "Error getting documents: ");
+        //Log.v("양성열", firebaseUser.getEmail()); 이메일 형식 가져오는 방법
         findViewById(R.id.Board_FloatingActionBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,28 +90,24 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
             }
         });
         //detail
-
-
-        FirebaseInstanceId.getInstance().getInstanceId()//토큰가져오기
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("양성열123", "getInstanceId failed", task.getException());
-                            return;
-                        }
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        // Log and toast
-//                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d("양성열123", token.toString());
-//                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
+        sendTokenToServer();
     }
+
+    private void sendTokenToServer() {//토큰 서버에 보내기
+        String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String token=FirebaseInstanceId.getInstance().getToken();
+        Log.d("Token",token);
+        assert token != null;
+        Map<String ,Object>map=new HashMap<>();
+        map.put("Token",token);
+        mStore.collection("users").document(uid).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+               // Log.d("시발","업로드성공");
+            }
+        });
+    }
+
     public void retreive_Testing(){
         mBoardList=new ArrayList<>();
         mStore.collection("Board")

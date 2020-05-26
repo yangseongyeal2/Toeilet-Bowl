@@ -51,6 +51,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         this.mCallback=listener;
     }
 
+
     ///////////////////////////클릭리스너
     public interface OnItemClickListener{
         void onitemClick(View v,int pos);

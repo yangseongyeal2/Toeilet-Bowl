@@ -18,16 +18,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
+import com.example.toilet_bowl.model.NotificationModel;
 import com.example.toilet_bowl.model.ReplyInfo;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHolder> {
     private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
@@ -150,4 +166,5 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         popup.show();
 
     }
+
 }
