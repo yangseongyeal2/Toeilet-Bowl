@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Toilet_bowl</string>
+    <string name="menu" />
+    <string name="profileimage" />
 </resources>

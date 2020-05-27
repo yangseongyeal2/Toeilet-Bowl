@@ -10,7 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SerchActivity"/>
-        <activity android:name=".DetailActivity" />
+        <activity
+            android:name=".DetailActivity"
+            android:parentActivityName=".BoardActivity"     >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+
+        </activity>
         <activity android:name=".WriteActivity" />
         <activity android:name=".BoardActivity" />
         <activity android:name=".MainActivity">

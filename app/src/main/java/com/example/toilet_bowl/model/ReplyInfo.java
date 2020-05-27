@@ -3,6 +3,7 @@ package com.example.toilet_bowl.model;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 public class ReplyInfo {
     private String uid;
@@ -12,13 +13,23 @@ public class ReplyInfo {
     @ServerTimestamp
     private Date date;
     private String documentId;
+    private List<String>uidLikelist;
 
-    public ReplyInfo(String uid, String deleted_at, String content, Date date, String documentId) {
+    public ReplyInfo(String uid, String deleted_at, String content, Date date, String documentId, List<String> uidLikelist) {
         this.uid = uid;
         this.deleted_at = deleted_at;
         this.content = content;
         this.date = date;
         this.documentId = documentId;
+        this.uidLikelist = uidLikelist;
+    }
+
+    public List<String> getUidLikelist() {
+        return uidLikelist;
+    }
+
+    public void setUidLikelist(List<String> uidLikelist) {
+        this.uidLikelist = uidLikelist;
     }
 
     @Override
@@ -29,6 +40,7 @@ public class ReplyInfo {
                 ", content='" + content + '\'' +
                 ", date=" + date +
                 ", documentId='" + documentId + '\'' +
+                ", uidLikelist=" + uidLikelist +
                 '}';
     }
 

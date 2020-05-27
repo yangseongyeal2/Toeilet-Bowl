@@ -24,10 +24,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
@@ -152,6 +155,24 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
 
         holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
         holder.mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
+        //댓글수 가져오기
+        final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+        CollectionReference cr=mStore.collection("Board").document(boardInfo.getDocumentId()).collection("reply");
+        cr.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.getResult()!=null){
+                    int count=0;
+                    for(QueryDocumentSnapshot data:task.getResult()){
+                        count++;
+                    }
+                    holder.mReplycount.setText(String.valueOf(count));
+                }
+
+            }
+        });
+
+
     }
 
 
@@ -167,6 +188,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         private LikeButton mLikeButton;
         private TextView mLikecount;
         private TextView mViewcount;
+        private TextView mReplycount;
 
        public BoardViewHolder(View itemView) {
            super(itemView);
@@ -176,6 +198,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
            mLikeButton=itemView.findViewById(R.id.item_likeButton_likeButton);
            mLikecount=itemView.findViewById(R.id.item_likecount);
            mViewcount=itemView.findViewById(R.id.item_viewcount_textView);
+           mReplycount=itemView.findViewById(R.id.item_replycount);
 
            itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                @Override

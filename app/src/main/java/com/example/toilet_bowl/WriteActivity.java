@@ -79,8 +79,6 @@ public class WriteActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),"업로드성공",Toast.LENGTH_LONG).show();
                             setResult( 99);//99보냄
 
-
-
 //                            LikeInfo likeInfo=new LikeInfo("","");
 //                            documentReference.collection("Like").document(uid).set(likeInfo);
              //               documentReference.update("uidList", FieldValue.arrayUnion(uid));

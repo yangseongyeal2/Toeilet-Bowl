@@ -1,30 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/item_profile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/profileimage"
+        android:src="@drawable/ic_profile_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_nickname_level"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:maxLines="1"
+        app:layout_constraintStart_toEndOf="@+id/item_profile"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/item_reply"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_reply_24dp"
+        app:layout_constraintEnd_toStartOf="@+id/item_reply_menu_imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.like.LikeButton
+        android:id="@+id/item_reply_likebutton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        app:anim_scale_factor="2"
+        app:circle_end_color="@color/colorAccent"
+        app:circle_start_color="@color/colorPrimary"
+        app:dots_primary_color="@color/colorAccent"
+        app:dots_secondary_color="@color/colorPrimary"
+        app:icon_size="25dp"
+        app:icon_type="heart"
+        app:is_enabled="true"
+        app:layout_constraintEnd_toStartOf="@+id/item_reply_likecount"
+        app:layout_constraintTop_toTopOf="parent"
+        app:like_drawable="@drawable/thumb_on"
+        app:liked="false"
+        app:unlike_drawable="@drawable/thumb_off" />
+
+    <TextView
+        android:id="@+id/item_reply_likecount"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toStartOf="@+id/item_reply"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/item_reply_menu_imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:contentDescription="@string/menu"
+        android:src="@drawable/ic_menu_black_35dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/item_reply_guideline"
+
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/item_reply_content"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/item_reply_guideline"
-        app:layout_constraintTop_toTopOf="parent" />
-    <ImageView
-        android:id="@+id/item_reply_menu_imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_menu_black_35dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/item_reply_guideline"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_reply_likebutton" />
 
-        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/item_reply_guideline"
@@ -32,5 +83,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="368dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/item_replytoreply_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/item_reply_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="50dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

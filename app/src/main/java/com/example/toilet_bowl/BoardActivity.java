@@ -70,13 +70,16 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
                 startActivity(intent);
             }
         });
+        Intent intent=getIntent();
+
+
 //        Intent intent=getIntent();
 //        String nickName=intent.getStringExtra("nickName");
 //        String photoUrl=intent.getStringExtra("photoURL");
         //Log.v("양성열", firebaseUser.getEmail()); 이메일 형식 가져오는 방법
         findViewById(R.id.Board_FloatingActionBtn).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//write 엑티비티로 이동
                 Intent intent =new Intent(getApplicationContext(),WriteActivity.class);
                 startActivityForResult(intent,99);
             }
@@ -102,14 +105,15 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
         });
         //detail
         //새로들어온 유저만 토큰을 서버로 보냄.
-        Intent intent=getIntent();
+       // Intent intent=getIntent();
         String autoflag=intent.getStringExtra("자동로그인");
         if(autoflag==null){
             sendUserInfoToServer();
-
-        }else{
-            updateTokenToServer();
         }
+//        else{
+//
+//            updateTokenToServer();
+//        }
 
         ///////////////////////////
 
@@ -197,6 +201,7 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
     }
 
     public void retreive_Testing(){
+
         mBoardList=new ArrayList<>();
         mStore.collection("Board")
                 .orderBy("date", Query.Direction.DESCENDING)

@@ -9,5 +9,6 @@ public class NotificationModel {
     public static class Notification{
         public String title;
         public String text;
+        public String documentId;
     }
 }

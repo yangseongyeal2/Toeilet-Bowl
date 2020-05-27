@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import com.example.toilet_bowl.BoardActivity;
 import com.example.toilet_bowl.DetailActivity;
 import com.example.toilet_bowl.MainActivity;
 import com.example.toilet_bowl.R;
+import com.example.toilet_bowl.SerchActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -41,22 +43,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     static final String TAG="파이어베이스 메세지 샘플";
     public String title;
     public String body;
+    public String documentid;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {//앱이 꺼져있을때 백그라운드
+     //    Check if message contains a data payload.
+        if (remoteMessage.getData().size() > 0) {//data형식
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             title=remoteMessage.getData().get("title");
             body=remoteMessage.getData().get("body");
+            documentid=remoteMessage.getData().get("documentId");
         }
         // 노티피케이션을 사용했을떄 데이터 가져오기
-
-        if (remoteMessage.getNotification() != null) {//앱이 커져있을때 포어 그라운드 노티피케이션을 보냄
+        if (remoteMessage.getNotification() != null) {//notification 형식
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             title=remoteMessage.getNotification().getTitle();
             body=remoteMessage.getNotification().getBody();
+
         }
+        //
 
 
         sendNotification();
@@ -64,16 +69,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(@NonNull String s) {
-        Log.d(TAG, "Refreshed token: " + s);
+        //Log.d(TAG, "Refreshed token: " + s);
         //서버에 토큰을 보내줘야함 만약 토큰이 새로 생겼다면(다시 다운로드 할때)
     }
 
 
     private void sendNotification() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DetailActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        intent.putExtra("DocumentId",documentid);//이거없으면 디테일 안열림.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack( DetailActivity.class );
+        stackBuilder.addNextIntent(intent);
+        Log.d("DocumentId",documentid);
+
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+//                PendingIntent.FLAG_ONE_SHOT); 이게 클래식 하지만 뒤로 누르면 바로꺼짐
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);//이게 뒤로 눌렀을때 안꺼지는 방법
         String channelId = "채널 ID";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =

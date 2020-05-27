@@ -53,6 +53,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +86,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private RequestQueue mRequesQue;
     private String URL="https://fcm.googleapis.com/fcm/send";
     private ProgressDialog loadingbar;
+    private String mDocumentId_send;
 
 
 
@@ -100,11 +102,14 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         mRequesQue= Volley.newRequestQueue(this);
         TextInputLayout mTextInputLayout = findViewById(R.id.detail_TextIputLayout);
         final String mDocumentId = getIntent().getStringExtra("DocumentId");//mDocumentId는 디테일 정보받아오기
+        mDocumentId_send=mDocumentId;
         swipeRefreshLayout=findViewById(R.id.Board_SwipeRefreshLayout);
         loadingbar=new ProgressDialog(this);
-
-        assert mDocumentId != null;
-        documentReference=mStore.collection("Board").document(mDocumentId);
+        if(mDocumentId!=null){
+            documentReference=mStore.collection("Board").document(mDocumentId);
+        }else {
+            Log.d(TAG,"보내기실패");
+        }
         initUid();//uid 전역변수로 사용가능
         upviewcount();//조회수 1올리기
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -115,8 +120,8 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
             }
         });
         retreiveDocumentReference(documentReference);
-        //retreiveReply(documentReference);
-        updateReply(documentReference);
+        retreiveReply(documentReference);
+        //updateReply(documentReference);
         mRecyclerView.setAdapter(mReplyAdapter);
         mTextInputLayout.setEndIconOnClickListener(new View.OnClickListener() {//에딧텍스트 업로드
             @Override
@@ -129,23 +134,53 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 if(mEditText.getText()!=null){
                     String reply_string = mEditText.getText().toString();
                     assert firebaseUser != null;
-                    ReplyInfo replyInfo=new ReplyInfo(firebaseUser.getUid(),"0",reply_string,new Date(),replyDocumentreference.getId());
+                    final ReplyInfo replyInfo=new ReplyInfo(firebaseUser.getUid(),"0",reply_string,new Date(),replyDocumentreference.getId(), Arrays.asList(""));
                     //mReplyInfoList.add(replyInfo);
                     replyDocumentreference.set(replyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "success");
-                            //mDetailAdapter.addItem(replyInfo);
-                            //sendGcm();//푸쉬알림넣기
-                            //subscribe(mDocumentId);
                             if(!uid.equals(firebaseUser.getUid())){//다른사람이 내 게시판에 글 올릴떄만 알림
-                                sendNotification(mDocumentId);
+                                documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        BoardInfo boardInfo=documentSnapshot.toObject(BoardInfo.class);
+                                        String title=boardInfo.getTitle();
+                                        String cotent=replyInfo.getContent();
+                                        sendNotification(mDocumentId,title,cotent);
+                                    }
+                                });
+                            }else if(uid.equals(firebaseUser.getUid())){//올린사람이 댓글을 달았을때 댓글달린사람 uidlist로 매세지보내기.
+                                documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                                        final BoardInfo boardInfo=documentSnapshot.toObject(BoardInfo.class);
+                                        String title=boardInfo.getTitle();
+                                        String cotent=replyInfo.getContent();
+                                        documentReference.collection("reply").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if(task.getResult()!=null){
+                                                    for(QueryDocumentSnapshot data:task.getResult()){
+                                                        ReplyInfo ri=data.toObject(ReplyInfo.class);
+                                                        if(!ri.getUid().equals(uid)){
+                                                            String title=boardInfo.getTitle();
+                                                            String cotent=replyInfo.getContent();
+                                                            sendNotification(ri.getUid(),title,cotent);
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                        });
+
+                                    }
+                                });
                             }
                             mEditText.setText("");
                             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                             assert imm != null;
                             imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
-                           // retreiveReply(documentReference);
+                            retreiveReply(documentReference);
                             loadingbar.dismiss();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -215,7 +250,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                             list.add(replyInfo);
                         }
                     }
-                    mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this);
+                    mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this,mEditText);
                     mRecyclerView.setAdapter(mReplyAdapter);
                 }
             }
@@ -246,7 +281,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                 list.add(replyInfo);
 
                         }
-                        mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this);
+                        mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this,mEditText);
                         mRecyclerView.setAdapter(mReplyAdapter);
 
                     }
@@ -262,14 +297,14 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     public void onClick(String value) {//어댑터에서 클릭후 오는 정보는 여기로옴
         // value this data you receive when increment() / decrement()
         if(value.equals("실시간 댓글 삭제")){
-           // retreiveReply(documentReference);
+            retreiveReply(documentReference);
         }
     }
 
     void subscribe(String mDocumentId){
         FirebaseMessaging.getInstance().subscribeToTopic(mDocumentId);
     }
-    private void sendNotification(String mDocumentId){
+    private void sendNotification(String documentId,String title,String content){
         /* our json object will lokk loke
         {
             "to": "topics/topic name",
@@ -281,11 +316,14 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         */
         JSONObject mainObj=new JSONObject();
         try {
-            mainObj.put("to","/topics/"+mDocumentId);
+            mainObj.put("to","/topics/"+documentId);
             JSONObject notificationObj=new JSONObject();
-            notificationObj.put("title","anytitle");
-            notificationObj.put("body","any");
-            mainObj.put("notification",notificationObj);
+            notificationObj.put("title",title+"에 댓글이 달렸습니다");
+            notificationObj.put("body","댓글:"+content);
+            notificationObj.put("documentId",mDocumentId_send);
+            Log.d("알림기능",mDocumentId_send);
+           // mainObj.put("notification",notificationObj);
+            mainObj.put("data",notificationObj);
 
 
             JsonObjectRequest request=new JsonObjectRequest(com.android.volley.Request.Method.POST, URL,

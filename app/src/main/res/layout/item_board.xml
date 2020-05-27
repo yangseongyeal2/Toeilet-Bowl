@@ -72,14 +72,31 @@
             app:liked="false"
             app:unlike_drawable="@drawable/thumb_off" />
 
+
         <TextView
             android:id="@+id/item_likecount"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
             app:layout_constraintStart_toEndOf="@+id/item_likeButton_likeButton"
             app:layout_constraintTop_toTopOf="@+id/item_likeButton_likeButton" />
+
+        <ImageView
+            android:id="@+id/item_replycount_Imageview"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/item_likecount"
+            android:src="@drawable/ic_reply_24dp"/>
+
+        <TextView
+            android:id="@+id/item_replycount"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/item_replycount_Imageview"
+            />
 
         <ImageView
             android:id="@+id/item_viewCount"

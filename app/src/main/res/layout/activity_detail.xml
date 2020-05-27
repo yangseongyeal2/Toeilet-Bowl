@@ -63,7 +63,11 @@
             android:id="@+id/detail_reply_EditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/edittext_login" />
+            android:background="@drawable/edittext_login">
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+
 
 
     </com.google.android.material.textfield.TextInputLayout>
