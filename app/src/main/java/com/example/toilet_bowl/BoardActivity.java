@@ -1,5 +1,6 @@
 package com.example.toilet_bowl;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,7 +57,7 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageView mSerchImageView;
-
+    private ProgressDialog loadingbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
             }
         });
         Intent intent=getIntent();
-
+        loadingbar=new ProgressDialog(this);
 
 //        Intent intent=getIntent();
 //        String nickName=intent.getStringExtra("nickName");
@@ -201,7 +202,10 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
     }
 
     public void retreive_Testing(){
-
+        loadingbar.setTitle("Set profile image");
+        loadingbar.setMessage("pleas wait업로딩중");
+        loadingbar.setCanceledOnTouchOutside(false);
+        loadingbar.show();
         mBoardList=new ArrayList<>();
         mStore.collection("Board")
                 .orderBy("date", Query.Direction.DESCENDING)
@@ -230,8 +234,10 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
                         }
                     });
                     mRecyclerView.setAdapter(mBoardAdapter);
+                    loadingbar.dismiss();
                 } else {
                     Log.d("양성열", "Error getting documents: ", task.getException());
+                    loadingbar.dismiss();
                 }
             }
         });

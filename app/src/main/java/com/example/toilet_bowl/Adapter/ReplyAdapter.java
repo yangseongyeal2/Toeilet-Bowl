@@ -76,6 +76,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     private ProgressDialog loadingbar;
     private  ReplytoreplyAdapter mReplytoreplyAdapter;
     private List<ReplyInfo> mReplyList;
+    private int count=0;
+
+
 
 
 
@@ -112,17 +115,17 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     @Override
     public void onBindViewHolder(@NonNull final ReplyAdapter.ReplyViewHolder holder, final int position) {
         final ReplyInfo replyInfo=mReplyList.get(position);
-        final DocumentReference replyInreplyRef=documentReference_reply
+        count=replyInfo.getUidLikelist().size();
+        final DocumentReference replyInreplyRef=documentReference_reply//대댓글 document 까지 가는 docuRef
                 .collection("reply").document(replyInfo.getDocumentId())
                 .collection("replyInreply").document();
-        retreiveReplyInReply(replyInreplyRef.getParent(),holder,position);
+        retreiveReplyInReply(replyInreplyRef.getParent(),holder,position);//대 댓글 불러오기 기능
         holder.mContent.setText(replyInfo.getContent());
         holder.mMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String documentId=replyInfo.getDocumentId();
                 show_menu(v,position);
-
             }
 
 
@@ -143,32 +146,39 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
        holder.mLikebutton.setOnLikeListener(new OnLikeListener() {
            @Override
            public void liked(LikeButton likeButton) {
+               count++;
                final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
                documentReference_reply.collection("reply").document(replyInfo.getDocumentId())
                        .update("uidLikelist",FieldValue.arrayUnion(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override
                    public void onComplete(@NonNull Task<Void> task) {
-                       holder.mLikecount.setText(String.valueOf(replyInfo.getUidLikelist().size()));
-                       mStore.collection("users").document(replyInfo.getUid())//user에있는 좋아요 갯수 늘리기
-                               .update("likecount",FieldValue.increment(1));
+                       holder.mLikecount.setText(String.valueOf(count-1));
+                       mStore.collection("users").document(replyInfo.getUid()).update("likecount",FieldValue.increment(1));//경험치+1
                    }
                });
            }
-
            @Override
            public void unLiked(LikeButton likeButton) {
+               count--;
                documentReference_reply.collection("reply").document(replyInfo.getDocumentId())
-                       .update("uidLikelist",FieldValue.arrayRemove(mFirebaseUser.getUid()));
-               holder.mLikecount.setText(String.valueOf(replyInfo.getUidLikelist().size()-1));
-               mStore.collection("users").document(replyInfo.getUid())//user에있는 좋아요 갯수 늘리기
-                       .update("likecount",FieldValue.increment(1));
+                       .update("uidLikelist",FieldValue.arrayRemove(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                   @Override
+                   public void onComplete(@NonNull Task<Void> task) {
+                       holder.mLikecount.setText(String.valueOf(count-1));//좋아요갯수구하기
+                       mStore.collection("users").document(replyInfo.getUid()).update("likecount",FieldValue.increment(-1));//경험치 -1
+                   }
+               });
+
            }
        });
-
-        holder.mLikecount.setText(String.valueOf(replyInfo.getUidLikelist().size()-1));
+        holder.mLikecount.setText(String.valueOf(count-1));
+        assert firebaseUser != null;
+        if(replyInfo.getUidLikelist().contains(firebaseUser.getUid())){
+            holder.mLikebutton.setLiked(true);
+        }
         holder.mReplyimage.setOnClickListener(new View.OnClickListener() {//대 댓글을 실행하시겠습니까 ?
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//대댓글 다이어로그 실행.
                 AlertDialog.Builder ad=new AlertDialog.Builder(mContext);
                 //ad.setIcon(R.mipmap.ic_launcher);
                 //ad.setTitle("제목");
@@ -191,10 +201,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                         textInputLayout_temp.setEndIconOnClickListener(new View.OnClickListener() {//대댓글 달때
                             @Override
                             public void onClick(View v) {
-                                loadingbar.setTitle("Set profile image");
-                                loadingbar.setMessage("pleas wait업로딩중");
-                                loadingbar.setCanceledOnTouchOutside(false);
-                                loadingbar.show();
+
                                 //Toast.makeText(mContext,"안보이던놈이 눌림",Toast.LENGTH_SHORT).show();
                                 final DocumentReference replyInreplyRef=documentReference_reply
                                         .collection("reply").document(replyInfo.getDocumentId())
@@ -222,7 +229,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                                             imm.hideSoftInputFromWindow(textInputEditText_temp.getWindowToken(), 0);
                                             //TODO 어댑터 설정...
                                             retreiveReplyInReply(replyInreplyRef.getParent(),holder,position);
-                                            loadingbar.dismiss();
+
                                         }
                                     });
 
@@ -253,7 +260,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         return mReplyList.size();
     }
 
-    public void retreiveReplyInReply(final CollectionReference replyInreplyRef,@NonNull final ReplyAdapter.ReplyViewHolder holder, final int position){
+    private void retreiveReplyInReply(final CollectionReference replyInreplyRef, @NonNull final ReplyAdapter.ReplyViewHolder holder, final int position){
+
         replyInreplyRef
                 .orderBy("date", Query.Direction.ASCENDING)
                 .get()
@@ -271,7 +279,13 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                     }
                     mReplytoreplyAdapter=new ReplytoreplyAdapter(list,mContext,replyInreplyRef.getParent(),mCallback);
                     holder.mRecyclerView.setAdapter(mReplytoreplyAdapter);
+
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+             Toast.makeText(mContext,"대댓글 불러오기 실패",Toast.LENGTH_SHORT).show();
             }
         });
     }

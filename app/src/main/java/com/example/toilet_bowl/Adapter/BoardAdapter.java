@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,8 +41,9 @@ import java.util.List;
 public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHolder>  {
     private List<BoardInfo> mBoardInfo;
     private Context mContext;
-    private FirebaseUser mFirebaseUser;
+    private FirebaseUser mFirebaseUser;//현재 사용중인 앱의 주인의 정보 .getCurrent 까지 된정보
     private OnItemClick mCallback;
+    private int count=0;
 
 
     public BoardAdapter(List<BoardInfo> mBoardInfo, Context mContext,FirebaseUser mFirebaseUser,OnItemClick listener) {
@@ -73,10 +75,10 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     public void onBindViewHolder(@NonNull final BoardViewHolder holder, final int position) {
 
             final BoardInfo boardInfo=mBoardInfo.get(position);
-
+            count=boardInfo.getUidList().size();
             holder.mTitleTextView.setText(boardInfo.getTitle());
             holder.mContentTextView.setText(boardInfo.getContent());
-            holder.mImageView_menu.setOnClickListener(new View.OnClickListener() {
+            holder.mImageView_menu.setOnClickListener(new View.OnClickListener() {//메뉴버튼 클릭 리스너
                 @Override
                 public void onClick(View v) {
                     show_menu(v,boardInfo.getDocumentId(),position);
@@ -124,36 +126,46 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
 
                 }
             });//삭제기능
-            holder.mLikeButton.setOnLikeListener(new OnLikeListener() {
+            holder.mLikeButton.setOnLikeListener(new OnLikeListener() {//좋아요 기능
                 @Override
                 public void liked(LikeButton likeButton) {
-//                    Toast.makeText(mContext, "너가 올린 게시물이 아니다", Toast.LENGTH_LONG).show();
+                    count++;
                     final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
 
                     DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
                     documentReference.update("uidList", FieldValue.arrayUnion(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()));
-                            mStore.collection("users").document(boardInfo.getUid())//user에있는 좋아요 갯수 늘리기
+                        public void onComplete(@NonNull Task<Void> task) {//좋아요 누른사람 배열에 추가.
+                            holder.mLikecount.setText(String.valueOf(count-1));//좋아요의 갯수 보여주기.
+                            Log.d("보드어댑터","좋아요버튼클릭");
+                            mStore.collection("users").document(boardInfo.getUid())//게시물 올린사람 경험치 +1
                                     .update("likecount",FieldValue.increment(1));
                         }
                     });
-                  //  holder.mLikecount.setText("좋아요");
                 }
                 @Override
-                public void unLiked(LikeButton likeButton) {
+                public void unLiked(LikeButton likeButton) {//싫어요 기능
+                    count--;
 //                    Toast.makeText(mContext, "너가 올린 게시물이 아니다", Toast.LENGTH_LONG).show();
                     final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
                     DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
-                    documentReference.update("uidList", FieldValue.arrayRemove(mFirebaseUser.getUid()));
-                    holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
-                    mStore.collection("users").document(boardInfo.getUid())//user에있는 좋아요 갯수 늘리기
-                            .update("likecount",FieldValue.increment(-1));
+
+                    documentReference.update("uidList", FieldValue.arrayRemove(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            holder.mLikecount.setText(String.valueOf(count-1));//좋아요 갯수 보여주기
+                            Log.d("보드어댑터","싫어요버튼클릭");
+                            mStore.collection("users").document(boardInfo.getUid())//게시물 올린사람 경험치 -1
+                                    .update("likecount",FieldValue.increment(-1));
+                        }
+                    });//싫어요 누른사람 배열에서 제거.
                 }
             });//좋아요 버튼
+        if(boardInfo.getUidList().contains(mFirebaseUser.getUid())){//이미 좋아요 누른사람은
+            holder.mLikeButton.setLiked(true);
+        }
 
-        holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
+        holder.mLikecount.setText(String.valueOf(count-1));//좋아요 버튼 갯수
         holder.mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
         //댓글수 가져오기
         final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
