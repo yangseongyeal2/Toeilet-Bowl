@@ -1,5 +1,6 @@
 package com.example.toilet_bowl.Adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -21,10 +22,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.toilet_bowl.DetailActivity;
 import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.MainActivity;
 import com.example.toilet_bowl.R;
 
+import com.example.toilet_bowl.model.BoardInfo;
 import com.example.toilet_bowl.model.FirebaseUserModel;
 
 import com.example.toilet_bowl.model.ReplyInfo;
@@ -32,19 +35,25 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
 
-
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -53,12 +62,22 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHolder> {
     private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+    private final FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
    // private List<String> documentIdList;
     private FirebaseUser mFirebaseUser= FirebaseAuth.getInstance().getCurrentUser();
     private Context mContext;
     private OnItemClick mCallback;
     private DocumentReference documentReference_reply;//reply 전까지
-    private EditText mEditText;
+    ///
+    private TextInputLayout textInputLayout_original;
+    private TextInputLayout textInputLayout_temp;
+    private TextInputEditText textInputEditText_original;
+    private TextInputEditText textInputEditText_temp;
+    private ProgressDialog loadingbar;
+    private  ReplytoreplyAdapter mReplytoreplyAdapter;
+    private List<ReplyInfo> mReplyList;
+
+
 
     ///////////////////////////클릭리스너
     public interface OnItemClickListener{
@@ -69,14 +88,18 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         this.mListener=listner;
     }
     ////////////////////////////////
-    private List<ReplyInfo> mReplyList;
 
-    public ReplyAdapter(List<ReplyInfo> mReplyList,DocumentReference documentReference_reply,Context context,OnItemClick listener,EditText mEditText) {//생성자
+
+    public ReplyAdapter(List<ReplyInfo> mReplyList,DocumentReference documentReference_reply,Context context,OnItemClick listener
+            ,TextInputLayout t1,TextInputLayout t2,TextInputEditText e1,TextInputEditText e2) {//생성자
         this.mReplyList = mReplyList;
         this.documentReference_reply=documentReference_reply;
         this.mContext=context;
         this.mCallback=listener;
-        this.mEditText=mEditText;
+        textInputLayout_original=t1;
+        textInputLayout_temp=t2;
+        textInputEditText_original=e1;
+        textInputEditText_temp=e2;
     }
     public ReplyAdapter(){}
 
@@ -89,6 +112,10 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     @Override
     public void onBindViewHolder(@NonNull final ReplyAdapter.ReplyViewHolder holder, final int position) {
         final ReplyInfo replyInfo=mReplyList.get(position);
+        final DocumentReference replyInreplyRef=documentReference_reply
+                .collection("reply").document(replyInfo.getDocumentId())
+                .collection("replyInreply").document();
+        retreiveReplyInReply(replyInreplyRef.getParent(),holder,position);
         holder.mContent.setText(replyInfo.getContent());
         holder.mMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,35 +164,73 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                        .update("likecount",FieldValue.increment(1));
            }
        });
+
         holder.mLikecount.setText(String.valueOf(replyInfo.getUidLikelist().size()-1));
         holder.mReplyimage.setOnClickListener(new View.OnClickListener() {//대 댓글을 실행하시겠습니까 ?
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder ad=new AlertDialog.Builder(mContext);
-                ad.setIcon(R.mipmap.ic_launcher);
-                ad.setTitle("제목");
+                //ad.setIcon(R.mipmap.ic_launcher);
+                //ad.setTitle("제목");
                 ad.setMessage("대댓글을 실행하시겠습니까?");
-
                 //yes or no
                 ad.setPositiveButton("예", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        textInputLayout_original.setVisibility(View.INVISIBLE);
+                        textInputLayout_temp.setVisibility(View.VISIBLE);
 //                        InputMethodManager imm = (InputMethodManager)mContext.getSystemService(INPUT_METHOD_SERVICE);
-//                        assert imm != null;
+//                        assert imm != null;// 일반적인 에디트텍스트 액티비티에서 보여줄때
 //                        imm.showSoftInput(mEditText, 0);
-                        mEditText.requestFocus();//에디트 텍스트 활성화
+                        textInputEditText_temp.requestFocus();//에디트 텍스트 활성화
                         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                         assert imm != null;
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                        holder.itemView.setBackgroundColor(Color.RED
-                        );
+                        holder.itemView.setBackgroundColor(Color.RED);
                         //TODO 대댓글 클릭했을때 실행할 방법.
+                        textInputLayout_temp.setEndIconOnClickListener(new View.OnClickListener() {//대댓글 달때
+                            @Override
+                            public void onClick(View v) {
+                                loadingbar.setTitle("Set profile image");
+                                loadingbar.setMessage("pleas wait업로딩중");
+                                loadingbar.setCanceledOnTouchOutside(false);
+                                loadingbar.show();
+                                //Toast.makeText(mContext,"안보이던놈이 눌림",Toast.LENGTH_SHORT).show();
+                                final DocumentReference replyInreplyRef=documentReference_reply
+                                        .collection("reply").document(replyInfo.getDocumentId())
+                                        .collection("replyInreply").document();
+                                if(textInputEditText_temp.getText()!=null){
+                                    final String uid=firebaseUser.getUid();
+                                    String reply_string = textInputEditText_temp.getText().toString();
+                                    assert firebaseUser != null;
+                                    final ReplyInfo replyInfo=new ReplyInfo(
+                                            firebaseUser.getUid()
+                                            ,"0"
+                                            ,reply_string
+                                            ,new Date()
+                                            ,replyInreplyRef.getId()
+                                            , Arrays.asList(""));
+                                    replyInreplyRef.set(replyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            textInputLayout_original.setVisibility(View.VISIBLE);
+                                            textInputLayout_temp.setVisibility(View.INVISIBLE);
+                                            holder.itemView.setBackgroundColor(Color.WHITE);
+                                            textInputEditText_temp.setText("");
+                                            InputMethodManager imm = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
+                                            assert imm != null;
+                                            imm.hideSoftInputFromWindow(textInputEditText_temp.getWindowToken(), 0);
+                                            //TODO 어댑터 설정...
+                                            retreiveReplyInReply(replyInreplyRef.getParent(),holder,position);
+                                            loadingbar.dismiss();
+                                        }
+                                    });
 
-
-
-
-
+                                }else{
+                                    Toast.makeText(mContext,"댓글을 입력하시오",Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
 
                         dialog.dismiss();
                     }
@@ -180,11 +245,35 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                 ad.show();
             }
         });
+
     }
 
     @Override
     public int getItemCount() {
         return mReplyList.size();
+    }
+
+    public void retreiveReplyInReply(final CollectionReference replyInreplyRef,@NonNull final ReplyAdapter.ReplyViewHolder holder, final int position){
+        replyInreplyRef
+                .orderBy("date", Query.Direction.ASCENDING)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    List<ReplyInfo> list=new ArrayList<>();
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.getResult()!=null){
+                    for (DocumentSnapshot documentSnapshot : task.getResult()){
+                        ReplyInfo replyInfo=documentSnapshot.toObject(ReplyInfo.class);
+                        assert replyInfo != null;
+                        if(replyInfo.getDeleted_at().equals("0")){
+                            list.add(replyInfo);
+                        }
+                    }
+                    mReplytoreplyAdapter=new ReplytoreplyAdapter(list,mContext,replyInreplyRef.getParent(),mCallback);
+                    holder.mRecyclerView.setAdapter(mReplytoreplyAdapter);
+                }
+            }
+        });
     }
 
     class ReplyViewHolder extends RecyclerView.ViewHolder {
@@ -194,6 +283,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         private LikeButton mLikebutton;
         private TextView mLikecount;
         private ImageView mReplyimage;
+        private RecyclerView mRecyclerView;
+
+
 
         ReplyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -203,9 +295,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             mLikebutton=itemView.findViewById(R.id.item_reply_likebutton);
             mLikecount=itemView.findViewById(R.id.item_reply_likecount);
             mReplyimage=itemView.findViewById(R.id.item_reply);
-
-
-
+            loadingbar=new ProgressDialog(mContext);
+            mRecyclerView=itemView.findViewById(R.id.item_replytoreply_recyclerView);
             itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                 @Override
                 public void onClick(View v) {//들어가는 기능 detail로

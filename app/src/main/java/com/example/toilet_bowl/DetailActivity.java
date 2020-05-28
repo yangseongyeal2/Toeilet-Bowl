@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.toilet_bowl.Adapter.BoardAdapter;
 import com.example.toilet_bowl.Adapter.ReplyAdapter;
+import com.example.toilet_bowl.Adapter.ReplytoreplyAdapter;
 import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.model.BoardInfo;
 import com.example.toilet_bowl.model.NotificationModel;
@@ -75,6 +76,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private TextView mTitle;
     private TextView mContent;
     private TextInputEditText mEditText;
+    private TextInputEditText mEditText2;
     private DocumentReference documentReference;
     private String uid;
     private ReplyAdapter mReplyAdapter;
@@ -87,6 +89,10 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private String URL="https://fcm.googleapis.com/fcm/send";
     private ProgressDialog loadingbar;
     private String mDocumentId_send;
+    private TextInputLayout mTextInputLayout;
+    private TextInputLayout mTextInputLayout2;
+    private ReplytoreplyAdapter mReplytoreplyAdapter;
+    private DocumentReference documentReference_reply;
 
 
 
@@ -97,10 +103,14 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         setContentView(R.layout.activity_detail);
         mTitle=findViewById(R.id.detail_title);
         mContent=findViewById(R.id.detail_content);
-        mEditText=findViewById(R.id.detail_reply_EditText);
         mRecyclerView=findViewById(R.id.detail_recyclerview);
         mRequesQue= Volley.newRequestQueue(this);
-        TextInputLayout mTextInputLayout = findViewById(R.id.detail_TextIputLayout);
+        //
+        mTextInputLayout = findViewById(R.id.detail_TextIputLayout);
+        mTextInputLayout2 = findViewById(R.id.detail_TextIputLayout2);
+        mEditText=findViewById(R.id.detail_reply_EditText);
+        mEditText2=findViewById(R.id.detail_reply_EditText2);
+        //
         final String mDocumentId = getIntent().getStringExtra("DocumentId");//mDocumentId는 디테일 정보받아오기
         mDocumentId_send=mDocumentId;
         swipeRefreshLayout=findViewById(R.id.Board_SwipeRefreshLayout);
@@ -110,6 +120,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         }else {
             Log.d(TAG,"보내기실패");
         }
+
         initUid();//uid 전역변수로 사용가능
         upviewcount();//조회수 1올리기
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -123,9 +134,10 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         retreiveReply(documentReference);
         //updateReply(documentReference);
         mRecyclerView.setAdapter(mReplyAdapter);
+
         mTextInputLayout.setEndIconOnClickListener(new View.OnClickListener() {//에딧텍스트 업로드
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//그냥 댓글 달때
                 loadingbar.setTitle("Set profile image");
                 loadingbar.setMessage("pleas wait업로딩중");
                 loadingbar.setCanceledOnTouchOutside(false);
@@ -193,7 +205,10 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                     Toast.makeText(getApplicationContext(),"댓글을 입력하시오",Toast.LENGTH_LONG).show();
                 }
             }
-        });
+        });//그냥 댓글 달때 끝
+
+
+
     }
 
     private void upviewcount() {
@@ -250,7 +265,8 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                             list.add(replyInfo);
                         }
                     }
-                    mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this,mEditText);
+                    mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this
+                            ,mTextInputLayout,mTextInputLayout2,mEditText,mEditText2);
                     mRecyclerView.setAdapter(mReplyAdapter);
                 }
             }
@@ -281,16 +297,14 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                 list.add(replyInfo);
 
                         }
-                        mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this,mEditText);
+                        mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this
+                                ,mTextInputLayout,mTextInputLayout2,mEditText,mEditText2);
                         mRecyclerView.setAdapter(mReplyAdapter);
 
                     }
                 });
-
-
-
-
     }
+
 
 
     @Override
