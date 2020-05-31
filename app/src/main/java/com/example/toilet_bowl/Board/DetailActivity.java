@@ -1,4 +1,4 @@
-package com.example.toilet_bowl;
+package com.example.toilet_bowl.Board;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,24 +8,21 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Message;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.toilet_bowl.Adapter.BoardAdapter;
 import com.example.toilet_bowl.Adapter.ReplyAdapter;
 import com.example.toilet_bowl.Adapter.ReplytoreplyAdapter;
 import com.example.toilet_bowl.Interface.OnItemClick;
+import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
-import com.example.toilet_bowl.model.NotificationModel;
 import com.example.toilet_bowl.model.ReplyInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,28 +43,16 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttp;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private static final String TAG="DetailActivity";
@@ -94,6 +79,10 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private ReplytoreplyAdapter mReplytoreplyAdapter;
     private DocumentReference documentReference_reply;
 
+    private TextView mLikecount;
+    private TextView mReplycount;
+    private TextView mViewcount;
+
 
 
 
@@ -111,14 +100,15 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         mEditText=findViewById(R.id.detail_reply_EditText);
         mEditText2=findViewById(R.id.detail_reply_EditText2);
         //
+        mLikecount=findViewById(R.id.item_detail_like_TextView);
+        mReplycount=findViewById(R.id.item_detail_replycount_TextView);
+        mViewcount=findViewById(R.id.item_detail_viewcount_TextView);
         final String mDocumentId = getIntent().getStringExtra("DocumentId");//mDocumentId는 디테일 정보받아오기
         mDocumentId_send=mDocumentId;
         swipeRefreshLayout=findViewById(R.id.Board_SwipeRefreshLayout);
         loadingbar=new ProgressDialog(this);
         if(mDocumentId!=null){
             documentReference=mStore.collection("Board").document(mDocumentId);
-        }else {
-            Log.d(TAG,"보내기실패");
         }
 
         initUid();//uid 전역변수로 사용가능
@@ -126,6 +116,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {//새로고침
+                retreiveDocumentReference(documentReference);
                 retreiveReply(documentReference);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -156,9 +147,11 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                                         BoardInfo boardInfo=documentSnapshot.toObject(BoardInfo.class);
+                                        assert boardInfo != null;
                                         String title=boardInfo.getTitle();
                                         String cotent=replyInfo.getContent();
-                                        sendNotification(mDocumentId,title,cotent);
+                                        sendNotification(mDocumentId_send,title,cotent);
+
                                     }
                                 });
                             }else if(uid.equals(firebaseUser.getUid())){//올린사람이 댓글을 달았을때 댓글달린사람 uidlist로 매세지보내기.
@@ -166,8 +159,6 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                     @Override
                                     public void onSuccess(final DocumentSnapshot documentSnapshot) {
                                         final BoardInfo boardInfo=documentSnapshot.toObject(BoardInfo.class);
-                                        String title=boardInfo.getTitle();
-                                        String cotent=replyInfo.getContent();
                                         documentReference.collection("reply").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -178,6 +169,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                                             String title=boardInfo.getTitle();
                                                             String cotent=replyInfo.getContent();
                                                             sendNotification(ri.getUid(),title,cotent);
+
                                                         }
                                                     }
                                                 }
@@ -188,6 +180,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                     }
                                 });
                             }
+                            documentReference.update("replycount",FieldValue.increment(1));//댓글수 1증가.
                             mEditText.setText("");
                             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                             assert imm != null;
@@ -222,13 +215,14 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         uid=document.get("uid").toString();
+
+
                     } else {
-                        Log.d(TAG, "No such document");
+
                     }
                 } else {
-                    Log.d(TAG, "get failed with ", task.getException());
+
                 }
 
             }
@@ -243,6 +237,9 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 assert boardInfo != null;
                 mTitle.setText(boardInfo.getTitle());
                 mContent.setText(boardInfo.getContent());
+                mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
+                mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
+                mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
             }
         });
 
@@ -259,7 +256,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 if(task.getResult()!=null) {
                     for (DocumentSnapshot documentSnapshot : task.getResult()){
                         ReplyInfo replyInfo=documentSnapshot.toObject(ReplyInfo.class);
-                        Log.d(TAG, "댓글불러오기 성공");
+
                         assert replyInfo != null;
                         if(replyInfo.getDeleted_at().equals("0")){
                             list.add(replyInfo);
@@ -269,11 +266,6 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                             ,mTextInputLayout,mTextInputLayout2,mEditText,mEditText2);
                     mRecyclerView.setAdapter(mReplyAdapter);
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG,"댓글불러오기 실패");
             }
         });
     }
@@ -285,14 +277,14 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                     public void onEvent(@Nullable QuerySnapshot value,
                                         @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
-                            Log.w(TAG, "Listen failed.", e);
+
                             return;
                         }
                         List<ReplyInfo> list=new ArrayList<>();
 
                         for (QueryDocumentSnapshot doc : value) {
                             ReplyInfo replyInfo=doc.toObject(ReplyInfo.class);
-                            Log.d(TAG, replyInfo.getContent());
+
 
                                 list.add(replyInfo);
 
@@ -335,7 +327,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
             notificationObj.put("title",title+"에 댓글이 달렸습니다");
             notificationObj.put("body","댓글:"+content);
             notificationObj.put("documentId",mDocumentId_send);
-            Log.d("알림기능",mDocumentId_send);
+
            // mainObj.put("notification",notificationObj);
             mainObj.put("data",notificationObj);
 
@@ -361,11 +353,12 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                     return  header;
                 }
             };
-
             mRequesQue.add(request);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
     }
 
 
