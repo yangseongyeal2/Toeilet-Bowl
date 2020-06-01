@@ -75,7 +75,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     public void onBindViewHolder(@NonNull final BoardViewHolder holder, final int position) {
 
             final BoardInfo boardInfo=mBoardInfo.get(position);
-            count=boardInfo.getUidList().size();
+
             holder.mTitleTextView.setText(boardInfo.getTitle());
             holder.mContentTextView.setText(boardInfo.getContent());
             holder.mImageView_menu.setOnClickListener(new View.OnClickListener() {//메뉴버튼 클릭 리스너
@@ -126,18 +126,23 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
 
                 }
             });//삭제기능
+
             holder.mLikeButton.setOnLikeListener(new OnLikeListener() {//좋아요 기능
                 @Override
                 public void liked(LikeButton likeButton) {
-                    count++;
                     final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+                    final DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
 
-                    DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
                     documentReference.update("uidList", FieldValue.arrayUnion(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {//좋아요 누른사람 배열에 추가.
-                            holder.mLikecount.setText(String.valueOf(count-1));//좋아요의 갯수 보여주기.
-                            Log.d("보드어댑터","좋아요버튼클릭");
+                            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    int count=task.getResult().toObject(boardInfo.getClass()).getUidList().size();
+                                    holder.mLikecount.setText(String.valueOf(count-1));
+                                }
+                            });
                             mStore.collection("users").document(boardInfo.getUid())//게시물 올린사람 경험치 +1
                                     .update("likecount",FieldValue.increment(1));
                         }
@@ -148,13 +153,18 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
                     count--;
 //                    Toast.makeText(mContext, "너가 올린 게시물이 아니다", Toast.LENGTH_LONG).show();
                     final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
-                    DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
+                    final DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
 
                     documentReference.update("uidList", FieldValue.arrayRemove(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            holder.mLikecount.setText(String.valueOf(count-1));//좋아요 갯수 보여주기
-                            Log.d("보드어댑터","싫어요버튼클릭");
+                            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    int count=task.getResult().toObject(boardInfo.getClass()).getUidList().size();
+                                    holder.mLikecount.setText(String.valueOf(count-1));
+                                }
+                            });
                             mStore.collection("users").document(boardInfo.getUid())//게시물 올린사람 경험치 -1
                                     .update("likecount",FieldValue.increment(-1));
                         }
@@ -165,7 +175,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
             holder.mLikeButton.setLiked(true);
         }
 
-        holder.mLikecount.setText(String.valueOf(count-1));//좋아요 버튼 갯수
+        holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));//좋아요 버튼 갯수
         holder.mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
         //댓글수 가져오기
         holder.mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
