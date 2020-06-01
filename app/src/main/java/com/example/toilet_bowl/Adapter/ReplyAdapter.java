@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -108,7 +109,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     @Override
     public void onBindViewHolder(@NonNull final ReplyAdapter.ReplyViewHolder holder, final int position) {
         final ReplyInfo replyInfo=mReplyList.get(position);
-        count=replyInfo.getUidLikelist().size();
         final DocumentReference replyInreplyRef=documentReference_reply//대댓글 document 까지 가는 docuRef
                 .collection("reply").document(replyInfo.getDocumentId())
                 .collection("replyInreply").document();
@@ -139,32 +139,44 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
        holder.mLikebutton.setOnLikeListener(new OnLikeListener() {
            @Override
            public void liked(LikeButton likeButton) {
-               count++;
                final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
                documentReference_reply.collection("reply").document(replyInfo.getDocumentId())
                        .update("uidLikelist",FieldValue.arrayUnion(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override
                    public void onComplete(@NonNull Task<Void> task) {
-                       holder.mLikecount.setText(String.valueOf(count-1));
+                       documentReference_reply.collection("reply").document(replyInfo.getDocumentId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                           @Override
+                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                               int count=task.getResult().toObject(replyInfo.getClass()).getUidLikelist().size();
+                               Log.d("댓글",String.valueOf(count));
+                               holder.mLikecount.setText(String.valueOf(count-1));
+                           }
+                       });
                        mStore.collection("users").document(replyInfo.getUid()).update("likecount",FieldValue.increment(1));//경험치+1
                    }
                });
            }
            @Override
            public void unLiked(LikeButton likeButton) {
-               count--;
+
                documentReference_reply.collection("reply").document(replyInfo.getDocumentId())
                        .update("uidLikelist",FieldValue.arrayRemove(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override
                    public void onComplete(@NonNull Task<Void> task) {
-                       holder.mLikecount.setText(String.valueOf(count-1));//좋아요갯수구하기
+                       documentReference_reply.collection("reply").document(replyInfo.getDocumentId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                           @Override
+                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                               int count=task.getResult().toObject(replyInfo.getClass()).getUidLikelist().size();
+                               Log.d("댓글",String.valueOf(count));
+                               holder.mLikecount.setText(String.valueOf(count-1));
+                           }
+                       });
                        mStore.collection("users").document(replyInfo.getUid()).update("likecount",FieldValue.increment(-1));//경험치 -1
                    }
                });
-
            }
        });
-        holder.mLikecount.setText(String.valueOf(count-1));
+        holder.mLikecount.setText(String.valueOf(replyInfo.getUidLikelist().size()-1));
         assert firebaseUser != null;
         if(replyInfo.getUidLikelist().contains(firebaseUser.getUid())){
             holder.mLikebutton.setLiked(true);
