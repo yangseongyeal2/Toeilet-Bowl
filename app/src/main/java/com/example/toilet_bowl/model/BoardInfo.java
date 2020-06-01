@@ -17,8 +17,9 @@ public class BoardInfo {
     private Date date;
     private List<String> uidList;
     private int viewcount;
+    private int replycount;
 
-    public BoardInfo(String title, String content, String uid, String documentId,  Date date, String deleted_at, List<String> uidList, int viewcount) {
+    public BoardInfo(String title, String content, String uid, String documentId,  Date date, String deleted_at, List<String> uidList, int viewcount, int replycount) {
         this.title = title;
         this.content = content;
         this.uid = uid;
@@ -27,6 +28,15 @@ public class BoardInfo {
         this.date = date;
         this.uidList = uidList;
         this.viewcount = viewcount;
+        this.replycount=replycount;
+    }
+
+    public int getReplycount() {
+        return replycount;
+    }
+
+    public void setReplycount(int replycount) {
+        this.replycount = replycount;
     }
 
     @Override
@@ -40,6 +50,7 @@ public class BoardInfo {
                 ", date=" + date +
                 ", uidList=" + uidList +
                 ", viewcount=" + viewcount +
+                ", replycount=" + replycount +
                 '}';
     }
 

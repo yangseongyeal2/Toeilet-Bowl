@@ -3,4 +3,9 @@
     <string name="menu" />
     <string name="profileimage" />
     <string name="start">시작하기</string>
+    <string name="마이페이지">마이페이지</string>
+    <string name="알림">알림</string>
+    <string name="게시판">게시판</string>
+    <string name="home">Home</string>
+    <string name="상담게시판">상담게시판</string>
 </resources>

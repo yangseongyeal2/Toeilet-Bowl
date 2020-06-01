@@ -1,4 +1,4 @@
-package com.example.toilet_bowl;
+package com.example.toilet_bowl.Start;
 
 import androidx.appcompat.app.AppCompatActivity;
 

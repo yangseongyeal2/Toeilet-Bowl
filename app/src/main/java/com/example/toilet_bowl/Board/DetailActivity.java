@@ -51,8 +51,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private static final String TAG="DetailActivity";
@@ -163,15 +165,19 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if(task.getResult()!=null){
+                                                    Set<String>uidset=new HashSet<>();
                                                     for(QueryDocumentSnapshot data:task.getResult()){
                                                         ReplyInfo ri=data.toObject(ReplyInfo.class);
                                                         if(!ri.getUid().equals(uid)){
                                                             String title=boardInfo.getTitle();
                                                             String cotent=replyInfo.getContent();
-                                                            sendNotification(ri.getUid(),title,cotent);
-
+                                                            uidset.add(ri.getUid());
                                                         }
                                                     }
+                                                    for(String str:uidset){//중복되지않게 보내기
+                                                        sendNotification(str,boardInfo.getTitle(),replyInfo.getContent());
+                                                    }
+
                                                 }
 
                                             }
@@ -230,6 +236,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     }
 
     private void retreiveDocumentReference(DocumentReference documentReference) {
+
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -240,11 +247,16 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
                 mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
                 mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
+
             }
         });
 
     }
     private void retreiveReply(final DocumentReference documentReference){
+        loadingbar.setTitle("Set profile image");
+        loadingbar.setMessage("pleas wait업로딩중");
+        loadingbar.setCanceledOnTouchOutside(false);
+        loadingbar.show();
         CollectionReference collectionReference=documentReference.collection("reply");
         collectionReference
                 .orderBy("date", Query.Direction.ASCENDING)
@@ -265,6 +277,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                     mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this
                             ,mTextInputLayout,mTextInputLayout2,mEditText,mEditText2);
                     mRecyclerView.setAdapter(mReplyAdapter);
+                    loadingbar.dismiss();
                 }
             }
         });

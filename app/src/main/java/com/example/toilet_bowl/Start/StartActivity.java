@@ -1,11 +1,13 @@
-package com.example.toilet_bowl;
+package com.example.toilet_bowl.Start;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+
+import com.example.toilet_bowl.Login.LoginActivity;
+import com.example.toilet_bowl.R;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -17,7 +19,7 @@ public class StartActivity extends AppCompatActivity {
         findViewById(R.id.start_gotomain).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                Intent intent=new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
         });

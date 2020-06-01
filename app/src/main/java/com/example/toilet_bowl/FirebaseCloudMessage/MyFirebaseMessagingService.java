@@ -1,42 +1,33 @@
 package com.example.toilet_bowl.FirebaseCloudMessage;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.PowerManager;
-import android.util.LogPrinter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import android.util.Log;
 
-import com.example.toilet_bowl.BoardActivity;
-import com.example.toilet_bowl.DetailActivity;
-import com.example.toilet_bowl.MainActivity;
+import com.example.toilet_bowl.Board.DetailActivity;
 import com.example.toilet_bowl.R;
-import com.example.toilet_bowl.SerchActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.example.toilet_bowl.model.NotiInfo;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.annotations.Since;
+import com.google.firestore.v1.FirestoreGrpc;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -44,6 +35,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public String title;
     public String body;
     public String documentid;
+    private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+    private FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
@@ -53,6 +46,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             title=remoteMessage.getData().get("title");
             body=remoteMessage.getData().get("body");
             documentid=remoteMessage.getData().get("documentId");
+            Date date=new Date() ;
+            NotiInfo notiInfo=new NotiInfo(title,body,documentid,date);
+            mStore.collection("users").document(firebaseUser.getUid()).collection("notification").document()
+                    .set(notiInfo)
+                    ;
+
+
         }
         // 노티피케이션을 사용했을떄 데이터 가져오기
         if (remoteMessage.getNotification() != null) {//notification 형식
@@ -83,8 +83,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         stackBuilder.addNextIntent(intent);
         Log.d("DocumentId",documentid);
 
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-//                PendingIntent.FLAG_ONE_SHOT); 이게 클래식 하지만 뒤로 누르면 바로꺼짐
+
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);//이게 뒤로 눌렀을때 안꺼지는 방법
         String channelId = "채널 ID";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

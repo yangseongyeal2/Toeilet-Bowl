@@ -1,4 +1,4 @@
-package com.example.toilet_bowl;
+package com.example.toilet_bowl.Board;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.toilet_bowl.Adapter.BoardAdapter;
 import com.example.toilet_bowl.Interface.OnItemClick;
+import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
 import com.example.toilet_bowl.model.FirebaseUserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,7 +35,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
@@ -71,7 +70,7 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
                 startActivity(intent);
             }
         });
-        Intent intent=getIntent();
+        //Intent intent=getIntent();
         loadingbar=new ProgressDialog(this);
 
 //        Intent intent=getIntent();
@@ -106,15 +105,14 @@ public class BoardActivity extends AppCompatActivity implements OnItemClick {
         });
         //detail
         //새로들어온 유저만 토큰을 서버로 보냄.
-       // Intent intent=getIntent();
-        String autoflag=intent.getStringExtra("자동로그인");
-        if(autoflag==null){
-            sendUserInfoToServer();
-        }
-//        else{
-//
-//            updateTokenToServer();
+//        String autoflag=intent.getStringExtra("자동로그인");
+//        if(autoflag==null){
+//            sendUserInfoToServer();
 //        }
+////        else{
+////
+////            updateTokenToServer();
+////        }
 
         ///////////////////////////
 

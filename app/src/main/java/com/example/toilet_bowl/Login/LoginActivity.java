@@ -1,4 +1,4 @@
-package com.example.toilet_bowl;
+package com.example.toilet_bowl.Login;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,8 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.toilet_bowl.Main.MainActivity;
+import com.example.toilet_bowl.R;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -19,14 +20,13 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     private SignInButton loginbtn_google;//구글 로그인 버튼
     private FirebaseAuth mAuth;//파이어 베이스 인증 객체
     private GoogleApiClient googleApiClient;//구글 API 클라이언트 객체
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {//앱이 실행될때 처음 수행되는 곳
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         GoogleSignInOptions googleSignInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .build();
 
         mAuth=FirebaseAuth.getInstance();
-        loginbtn_google=findViewById(R.id.login_google);
+        loginbtn_google=findViewById(R.id.login_google);//로그인 버튼 클릭했을때
         loginbtn_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void updateUI(FirebaseUser currentUser) {//자동로그인 이미 로그인이 되있음
         Toast.makeText(this,"로그인이 이미 되어있습니다 :"+currentUser.toString(),Toast.LENGTH_LONG).show();
-        Intent intent=new Intent(getApplicationContext(),BoardActivity.class);
+        Intent intent=new Intent(getApplicationContext(), MainActivity.class);
         intent.putExtra("자동로그인","자동로그인성공");
         startActivity(intent);
         finish();
@@ -97,15 +97,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                       if(task.isSuccessful()){//로그인 이 성공
-                          Toast.makeText(MainActivity.this,"로그인성공",Toast.LENGTH_LONG).show();
-                          Intent intent=new Intent(getApplicationContext(),BoardActivity.class);
-                          intent.putExtra("nickName",account.getDisplayName());
-                          intent.putExtra("photoURL",String.valueOf(account.getPhotoUrl()));
-
-
+                          Toast.makeText(LoginActivity.this,"로그인성공",Toast.LENGTH_LONG).show();
+                          Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                         // intent.putExtra("nickName",account.getDisplayName());
+                         // intent.putExtra("photoURL",String.valueOf(account.getPhotoUrl()));
                           startActivity(intent);
                       }else {//로그인이 실패
-                          Toast.makeText(MainActivity.this,"로그인실패",Toast.LENGTH_LONG).show();
+                          Toast.makeText(LoginActivity.this,"로그인실패",Toast.LENGTH_LONG).show();
                       }
                     }
                 });

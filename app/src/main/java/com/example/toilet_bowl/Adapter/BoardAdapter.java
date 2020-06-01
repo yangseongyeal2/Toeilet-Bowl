@@ -103,7 +103,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 Toast.makeText(mContext, "파이어베이스 deleted_at 현재신간으로 업데이트", Toast.LENGTH_LONG).show();
-                                                mCallback.onClick("실시간 데이터 삭제");//삭제하면 콜백함수로 양성열 보내짐.//이 어댑터에서 보낼 정보는 이렇게쓰면댐
+                                                mCallback.onClick("실시간 데이터 삭제");//삭제하면 콜백함수로 boardActivity에 실시간 데이터 삭제 보내짐.//이 어댑터에서 보낼 정보는 이렇게쓰면댐
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -168,21 +168,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         holder.mLikecount.setText(String.valueOf(count-1));//좋아요 버튼 갯수
         holder.mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
         //댓글수 가져오기
-        final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
-        CollectionReference cr=mStore.collection("Board").document(boardInfo.getDocumentId()).collection("reply");
-        cr.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.getResult()!=null){
-                    int count=0;
-                    for(QueryDocumentSnapshot data:task.getResult()){
-                        count++;
-                    }
-                    holder.mReplycount.setText(String.valueOf(count));
-                }
-
-            }
-        });
+        holder.mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
 
 
     }
@@ -226,8 +212,5 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
 
         }
     }
-    public void addItem(BoardInfo boardInfo){
-        mBoardInfo.add(boardInfo);
-        notifyDataSetChanged();
-    }
+
 }

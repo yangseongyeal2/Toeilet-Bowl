@@ -10,24 +10,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.toilet_bowl.DetailActivity;
 import com.example.toilet_bowl.Interface.OnItemClick;
-import com.example.toilet_bowl.MainActivity;
 import com.example.toilet_bowl.R;
 
-import com.example.toilet_bowl.model.BoardInfo;
 import com.example.toilet_bowl.model.FirebaseUserModel;
 
 import com.example.toilet_bowl.model.ReplyInfo;
@@ -46,7 +40,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.like.LikeButton;
 import com.like.OnLikeListener;

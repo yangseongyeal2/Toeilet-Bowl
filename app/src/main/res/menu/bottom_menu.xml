@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottommenu_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_airplanemode_active_black_24dp"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/bottommenu_board"
+        android:enabled="true"
+        android:icon="@drawable/ic_airplanemode_active_black_24dp"
+        android:title="@string/게시판" />
+
+    <item
+        android:id="@+id/bottommenu_notifications"
+        android:enabled="true"
+        android:icon="@drawable/ic_airplanemode_active_black_24dp"
+        android:title="@string/알림" />
+
+    <item
+        android:id="@+id/bottommenu_mypage"
+        android:enabled="true"
+        android:icon="@drawable/ic_airplanemode_active_black_24dp"
+        android:title="@string/마이페이지" />
+
+</menu>

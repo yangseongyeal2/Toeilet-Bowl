@@ -61,7 +61,7 @@ public class Home extends Fragment {
 
         view.findViewById(R.id.home_write_Button).setOnClickListener(new View.OnClickListener() {//Board fragment로 데이터 보내기
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//fragment에서 fragment로 데이터 보내는방법
                Bundle bundle=new Bundle();
                bundle.putString("write","디테일");
                 FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();

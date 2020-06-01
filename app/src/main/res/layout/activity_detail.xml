@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActivity">
+    tools:context=".Board.DetailActivity">
 
     <TextView
         android:id="@+id/detail_title"
@@ -14,62 +14,84 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/detail_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_title"
+        app:layout_constraintTop_toBottomOf="@+id/detail_title" />
+
+    <ImageView
+        android:id="@+id/item_home_like_ImageView"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:src="@drawable/ic_thumb_up_black_35dp"
+        app:layout_constraintRight_toLeftOf="@+id/item_detail_like_TextView"
+        app:layout_constraintTop_toBottomOf="@+id/detail_content" />
+
+    <TextView
+        android:id="@+id/item_detail_like_TextView"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        app:layout_constraintRight_toLeftOf="@+id/item_detail_replycount_ImageView"
+        app:layout_constraintTop_toBottomOf="@+id/detail_content" />
+
+    <ImageView
+        android:id="@+id/item_detail_replycount_ImageView"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:src="@drawable/ic_reply_24dp"
+        app:layout_constraintRight_toLeftOf="@+id/item_detail_replycount_TextView"
+        app:layout_constraintTop_toBottomOf="@+id/detail_content" />
+
+    <TextView
+        android:id="@+id/item_detail_replycount_TextView"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        app:layout_constraintRight_toLeftOf="@+id/item_detail_viewcount_ImageView"
+        app:layout_constraintTop_toBottomOf="@+id/detail_content" />
+
+    <ImageView
+        android:id="@+id/item_detail_viewcount_ImageView"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:src="@drawable/ic_viewcount_24dp"
+        app:layout_constraintRight_toLeftOf="@+id/item_detail_viewcount_TextView"
+        app:layout_constraintTop_toBottomOf="@+id/detail_content"
+
         />
+
+    <TextView
+        android:id="@+id/item_detail_viewcount_TextView"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_content" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/Board_SwipeRefreshLayout"
-        android:layout_marginBottom="45dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_content"
-        app:layout_constraintVertical_bias="0.0">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/detail_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_content"/>
+        app:layout_constraintTop_toBottomOf="@+id/item_home_like_ImageView"
+        app:layout_constraintBottom_toTopOf="@+id/detail_TextIputLayout"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/detail_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/item_detail_viewcount_TextView" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/detail_TextIputLayout"
-    style="style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    app:boxBackgroundColor="#262fff"
-    app:endIconContentDescription="보내기기능"
-    app:endIconDrawable="@drawable/ic_send_black_24dp"
-    app:endIconMode="custom"
-    app:errorEnabled="true"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:startIconContentDescription="댓글이미지"
-    app:startIconDrawable="@drawable/ic_favorite_black_24dp">
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/detail_reply_EditText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/edittext_login">
-    </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:visibility="invisible"
-        android:id="@+id/detail_TextIputLayout2"
+        android:id="@+id/detail_TextIputLayout"
         style="style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -78,9 +100,35 @@
         app:endIconDrawable="@drawable/ic_send_black_24dp"
         app:endIconMode="custom"
         app:errorEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:startIconContentDescription="댓글이미지"
+        app:startIconDrawable="@drawable/ic_favorite_black_24dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/detail_reply_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/edittext_login">
+
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/detail_TextIputLayout2"
+        style="style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="invisible"
+        app:boxBackgroundColor="#262fff"
+        app:endIconContentDescription="보내기기능"
+        app:endIconDrawable="@drawable/ic_send_black_24dp"
+        app:endIconMode="custom"
+        app:errorEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:startIconContentDescription="댓글이미지"
         app:startIconDrawable="@drawable/ic_favorite_black_24dp">
 
@@ -88,8 +136,7 @@
             android:id="@+id/detail_reply_EditText2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/edittext_login">
-        </com.google.android.material.textfield.TextInputEditText>
+            android:background="@drawable/edittext_login"></com.google.android.material.textfield.TextInputEditText>
     </com.google.android.material.textfield.TextInputLayout>
 
 

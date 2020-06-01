@@ -1,4 +1,4 @@
-package com.example.toilet_bowl;
+package com.example.toilet_bowl.Board;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 import android.util.Log;
 
+import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,9 +34,6 @@ public class WriteActivity extends AppCompatActivity {
     private String uid_intent;
     private Date date_intent;
     private String documentId_intent;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,20 +67,15 @@ public class WriteActivity extends AppCompatActivity {
                     Log.d("양성열",uid);
                     String contents = mContents.getText().toString();
                     Date date=new Date();
-                    String documentId=documentReference.getId();
-                    FirebaseMessaging.getInstance().subscribeToTopic(documentId);//구독하기
+                    final String documentId=documentReference.getId();
 
-                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,documentId,date,"0", Arrays.asList(""),0);
+                    final BoardInfo boardInfo = new BoardInfo(title, contents, uid,documentId,date,"0", Arrays.asList(""),0,0);
                     documentReference.set(boardInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getApplicationContext(),"업로드성공",Toast.LENGTH_LONG).show();
                             setResult( 99);//99보냄
-
-//                            LikeInfo likeInfo=new LikeInfo("","");
-//                            documentReference.collection("Like").document(uid).set(likeInfo);
-             //               documentReference.update("uidList", FieldValue.arrayUnion(uid));
-
+                            FirebaseMessaging.getInstance().subscribeToTopic(documentId);//구독하기
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
