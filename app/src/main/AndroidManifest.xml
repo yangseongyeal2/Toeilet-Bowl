@@ -9,8 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Main.MainActivity"></activity>
-        <activity android:name=".Start.StartActivity" />
+        <activity android:name=".Main.MainActivity">
+
+        </activity>
+        <activity android:name=".Start.StartActivity"/>
         <activity
             android:name=".Start.SplashActivity"
             android:theme="@style/SplashTheme">
