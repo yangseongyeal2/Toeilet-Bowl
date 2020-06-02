@@ -1,51 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    >
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".Board.WriteActivity">
+
+    <ImageView
+        android:id="@+id/write_addphoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:src="@drawable/ic_add_photo_35dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/write_textInputLayout_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
         app:boxBackgroundColor="#262fff"
-
         app:endIconContentDescription="보내기기능"
         app:endIconDrawable="@drawable/ic_send_black_24dp"
+        android:layout_marginTop="20dp"
         app:endIconMode="custom"
-
         app:errorEnabled="true"
-        app:layout_constraintRight_toRightOf="parent"
-
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/write_addphoto"
         app:startIconContentDescription="댓글이미지"
-        app:startIconDrawable="@drawable/ic_favorite_black_24dp"
-        >
+        app:startIconDrawable="@drawable/ic_favorite_black_24dp">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/write_title_EditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/write_textInputLayout_contents"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/write_textInputLayout_title"
         app:endIconContentDescription="보내기기능"
         app:endIconDrawable="@drawable/ic_send_black_24dp"
         app:endIconMode="custom"
-
         app:errorEnabled="true"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/write_textInputLayout_title"
 
 
         app:startIconContentDescription="댓글이미지"
@@ -57,5 +71,12 @@
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
+    <com.smarteist.autoimageslider.SliderView
+        android:id="@+id/write_sliderview"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/write_textInputLayout_contents"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

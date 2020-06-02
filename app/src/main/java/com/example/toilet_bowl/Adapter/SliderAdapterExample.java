@@ -40,7 +40,7 @@ public class SliderAdapterExample extends SliderViewAdapter<SliderAdapterExample
         notifyDataSetChanged();
     }
 
-   // public List<SliderItem> getItem(){return mSliderItems;}
+    // public List<SliderItem> getItem(){return mSliderItems;}
 
     @Override
     public SliderAdapterVH onCreateViewHolder(ViewGroup parent) {
@@ -69,7 +69,7 @@ public class SliderAdapterExample extends SliderViewAdapter<SliderAdapterExample
         View itemView;
         ImageView imageViewBackground;
         //ImageView imageGifContainer;
-       // TextView textViewDescription;
+        // TextView textViewDescription;
 
         SliderAdapterVH(View itemView) {
             super(itemView);

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/detail_mainBoss_constraintLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/detail_ScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detail_main_constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".Board.DetailActivity">
+
+            <TextView
+                android:id="@+id/detail_title"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/detail_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detail_title" />
+
+
+            <LinearLayout
+                android:id="@+id/detail_LinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35sp"
+                android:gravity="end"
+                android:orientation="horizontal"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detail_content">
+
+                <ImageView
+                    android:id="@+id/item_home_like_ImageView"
+                    android:layout_width="35sp"
+                    android:layout_height="35sp"
+                    android:src="@drawable/ic_thumb_up_black_35dp" />
+
+                <TextView
+                    android:id="@+id/item_detail_like_TextView"
+                    android:layout_width="35sp"
+                    android:layout_height="35sp" />
+
+                <ImageView
+                    android:id="@+id/item_detail_replycount_ImageView"
+                    android:layout_width="35sp"
+                    android:layout_height="35sp"
+                    android:src="@drawable/ic_reply_24dp" />
+
+                <TextView
+                    android:id="@+id/item_detail_replycount_TextView"
+                    android:layout_width="35sp"
+                    android:layout_height="35sp" />
+
+                <ImageView
+                    android:id="@+id/item_detail_viewcount_ImageView"
+                    android:layout_width="35sp"
+                    android:layout_height="35sp"
+                    android:src="@drawable/ic_viewcount_24dp"
+                    />
+
+                <TextView
+                    android:id="@+id/item_detail_viewcount_TextView"
+                    android:layout_width="35sp"
+                    android:layout_height="35sp" />
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detail_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="40dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detail_LinearLayout" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/detail_TextIputLayout"
+        style="style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:boxBackgroundColor="#262fff"
+        app:endIconContentDescription="보내기기능"
+        app:endIconDrawable="@drawable/ic_send_black_24dp"
+        app:endIconMode="custom"
+        app:errorEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:startIconContentDescription="댓글이미지"
+        app:startIconDrawable="@drawable/ic_favorite_black_24dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/detail_reply_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/edittext_login"
+            android:padding="3dp">
+
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/detail_TextIputLayout2"
+        style="style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="5dp"
+        android:visibility="invisible"
+        app:boxBackgroundColor="#262fff"
+        app:endIconContentDescription="보내기기능"
+        app:endIconDrawable="@drawable/ic_send_black_24dp"
+        app:endIconMode="custom"
+        app:errorEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:startIconContentDescription="댓글이미지"
+        app:startIconDrawable="@drawable/ic_favorite_black_24dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/detail_reply_EditText2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/edittext_login"
+            android:padding="3dp">
+
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,13 +3,19 @@ package com.example.toilet_bowl.Board;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -20,10 +26,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.toilet_bowl.Adapter.ReplyAdapter;
 import com.example.toilet_bowl.Adapter.ReplytoreplyAdapter;
+import com.example.toilet_bowl.Adapter.SliderAdapterExample;
 import com.example.toilet_bowl.Interface.OnItemClick;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
 import com.example.toilet_bowl.model.ReplyInfo;
+import com.example.toilet_bowl.model.SliderItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,6 +51,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,6 +80,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private ReplyAdapter mReplyAdapter;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageView mToiletImageView;
 
     //device to device notification
     //private RequestQueue mRequesQue;
@@ -85,12 +97,25 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private TextView mReplycount;
     private TextView mViewcount;
 
+    private SliderView mSliderView;
+    private SliderAdapterExample mSliderAdapterExample;
+
+    private ConstraintLayout constraintLayout;
+
+
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //
+        final String mDocumentId = getIntent().getStringExtra("DocumentId");//mDocumentId는 디테일 정보받아오기
+        if(mDocumentId!=null){
+            documentReference=mStore.collection("Board").document(mDocumentId);
+        }
+        constraintLayout=new ConstraintLayout(this);
+        //
         setContentView(R.layout.activity_detail);
         mTitle=findViewById(R.id.detail_title);
         mContent=findViewById(R.id.detail_content);
@@ -105,26 +130,38 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         mLikecount=findViewById(R.id.item_detail_like_TextView);
         mReplycount=findViewById(R.id.item_detail_replycount_TextView);
         mViewcount=findViewById(R.id.item_detail_viewcount_TextView);
-        final String mDocumentId = getIntent().getStringExtra("DocumentId");//mDocumentId는 디테일 정보받아오기
+
         mDocumentId_send=mDocumentId;
-        swipeRefreshLayout=findViewById(R.id.Board_SwipeRefreshLayout);
+        //swipeRefreshLayout=findViewById(R.id.detail_SwipeRefreshLayout);
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {//새로고침
+//                //retreiveDocumentReference(documentReference);
+//                retreiveReply(documentReference);
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
+        mToiletImageView=findViewById(R.id.detail_toiletimage);
         loadingbar=new ProgressDialog(this);
-        if(mDocumentId!=null){
-            documentReference=mStore.collection("Board").document(mDocumentId);
-        }
+
+        mSliderView=findViewById(R.id.detail_sliderView);
+        mSliderView.setIndicatorAnimation(IndicatorAnimations.THIN_WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        mSliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+        mSliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_RIGHT);
+        mSliderView.setIndicatorSelectedColor(Color.WHITE);
+        mSliderView.setIndicatorUnselectedColor(Color.GRAY);
+        mSliderView.setScrollTimeInSec(3);
+        mSliderView.setAutoCycle(false);
+
+
+        mSliderAdapterExample=new SliderAdapterExample(this);
 
         initUid();//uid 전역변수로 사용가능
         upviewcount();//조회수 1올리기
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {//새로고침
-                retreiveDocumentReference(documentReference);
-                retreiveReply(documentReference);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+
         retreiveDocumentReference(documentReference);
         retreiveReply(documentReference);
+        //retreivePhoto(documentReference);
         //updateReply(documentReference);
         mRecyclerView.setAdapter(mReplyAdapter);
 
@@ -210,6 +247,8 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
 
     }
 
+
+
     private void upviewcount() {
         documentReference.update("viewcount", FieldValue.increment(1));
     }
@@ -222,21 +261,13 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         uid=document.get("uid").toString();
-
-
-                    } else {
-
                     }
-                } else {
-
                 }
-
             }
         });
     }
 
     private void retreiveDocumentReference(DocumentReference documentReference) {
-
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -247,6 +278,27 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
                 mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
                 mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
+                //sliderview
+                if(boardInfo.getmDownloadURIList().size()!=0){
+                    for(int i=0;i<boardInfo.getmDownloadURIList().size();i++){
+                        String url=boardInfo.getmDownloadURIList().get(i);
+                        SliderItem sliderItem=new SliderItem(url);
+                        mSliderAdapterExample.addItem(sliderItem);
+                        if(i==boardInfo.getmDownloadURIList().size()-1){
+                            mSliderView.setSliderAdapter(mSliderAdapterExample);
+                        }
+                    }
+                }else{
+//                    Log.d("슬라이드","안보이게함");
+                    //TODO 여기 텍스트만 있을때 사진 없애기 ..
+                    mSliderView.setVisibility(View.INVISIBLE);
+                    mToiletImageView.setVisibility(View.VISIBLE);
+
+
+
+
+
+                }
 
             }
         });

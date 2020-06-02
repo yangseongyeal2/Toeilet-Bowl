@@ -2,6 +2,7 @@ package com.example.toilet_bowl.model;
 
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -18,8 +19,9 @@ public class BoardInfo {
     private List<String> uidList;
     private int viewcount;
     private int replycount;
+    private ArrayList<String> mDownloadURIList;
 
-    public BoardInfo(String title, String content, String uid, String documentId,  Date date, String deleted_at, List<String> uidList, int viewcount, int replycount) {
+    public BoardInfo(String title, String content, String uid, String documentId,  Date date, String deleted_at, List<String> uidList, int viewcount, int replycount,ArrayList<String> mDownloadURIList) {
         this.title = title;
         this.content = content;
         this.uid = uid;
@@ -29,14 +31,15 @@ public class BoardInfo {
         this.uidList = uidList;
         this.viewcount = viewcount;
         this.replycount=replycount;
+        this.mDownloadURIList=mDownloadURIList;
     }
 
-    public int getReplycount() {
-        return replycount;
+    public ArrayList<String> getmDownloadURIList() {
+        return mDownloadURIList;
     }
 
-    public void setReplycount(int replycount) {
-        this.replycount = replycount;
+    public void setmDownloadURIList(ArrayList<String> mDownloadURIList) {
+        this.mDownloadURIList = mDownloadURIList;
     }
 
     @Override
@@ -51,7 +54,16 @@ public class BoardInfo {
                 ", uidList=" + uidList +
                 ", viewcount=" + viewcount +
                 ", replycount=" + replycount +
+                ", mDownloadURIList=" + mDownloadURIList +
                 '}';
+    }
+
+    public int getReplycount() {
+        return replycount;
+    }
+
+    public void setReplycount(int replycount) {
+        this.replycount = replycount;
     }
 
     public int getViewcount() {
