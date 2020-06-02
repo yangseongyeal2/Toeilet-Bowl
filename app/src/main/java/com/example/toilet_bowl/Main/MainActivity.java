@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         String UserNickName= intent.getStringExtra("UserNickName");
-
         if (UserNickName != null) {
             sendUserInfoToServer(UserNickName);
         }
