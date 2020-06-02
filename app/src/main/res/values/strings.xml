@@ -8,4 +8,6 @@
     <string name="게시판">게시판</string>
     <string name="home">Home</string>
     <string name="상담게시판">상담게시판</string>
+    <string name="로그아웃">로그아웃</string>
+    <string name="nickname">NickName</string>
 </resources>

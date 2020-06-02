@@ -1,18 +1,23 @@
 package com.example.toilet_bowl.model;
 
+import java.util.Date;
+
 public class FirebaseUserModel {
     private String token;
     private String uid;
     private int likecount;
-
+    private String UserNickName;
     private String nickname;
 
-    public FirebaseUserModel(String token, String uid, int likecount,  String nickname) {
+    private Date date;
+
+    public FirebaseUserModel(String token, String uid, int likecount,  String nickname,String UserNickName,Date date) {
         this.token = token;
         this.uid = uid;
         this.likecount = likecount;
-
         this.nickname = nickname;
+        this.UserNickName=UserNickName;
+        this.date=date;
     }
     public FirebaseUserModel(){}
 
@@ -22,8 +27,26 @@ public class FirebaseUserModel {
                 "token='" + token + '\'' +
                 ", uid='" + uid + '\'' +
                 ", likecount=" + likecount +
+                ", UserNickName='" + UserNickName + '\'' +
                 ", nickname='" + nickname + '\'' +
+                ", date=" + date +
                 '}';
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getUserNickName() {
+        return UserNickName;
+    }
+
+    public void setUserNickName(String userNickName) {
+        UserNickName = userNickName;
     }
 
     public String getToken() {
@@ -49,9 +72,6 @@ public class FirebaseUserModel {
     public void setLikecount(int likecount) {
         this.likecount = likecount;
     }
-
-
-
 
     public String getNickname() {
         return nickname;

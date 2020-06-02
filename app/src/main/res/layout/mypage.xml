@@ -7,12 +7,52 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/mypage_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="60dp"
         android:text="@string/마이페이지"
-        app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/mypage_email"
+        android:layout_width="match_parent"
+        android:layout_height="30sp"
+        android:text="이메일"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_title" />
+
+    <TextView
+        android:id="@+id/mypage_UserNickname"
+        android:layout_width="match_parent"
+        android:layout_height="30sp"
+        android:text="유저닉네임"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_email" />
+
+    <TextView
+        android:id="@+id/mypage_Nickname"
+        android:layout_width="match_parent"
+        android:layout_height="30sp"
+        android:text="레벨"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_UserNickname" />
+
+    <TextView
+        android:id="@+id/mypage_likecount"
+        android:layout_width="match_parent"
+        android:layout_height="30sp"
+        android:text="좋아요카운트"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_Nickname" />
+
+    <TextView
+        android:id="@+id/mypage_created_at"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_likecount" />
 </androidx.constraintlayout.widget.ConstraintLayout>

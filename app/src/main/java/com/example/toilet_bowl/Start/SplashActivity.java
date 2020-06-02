@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.toilet_bowl.Login.LoginActivity;
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override
@@ -15,7 +17,7 @@ public class SplashActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        startActivity(new Intent(this, StartActivity.class));
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 }

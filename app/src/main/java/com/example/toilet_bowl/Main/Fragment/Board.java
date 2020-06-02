@@ -153,6 +153,7 @@ public class Board extends Fragment implements OnItemClick {
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(getActivity(), LoginActivity.class));
+
     }
     @Override
     public void onClick(String value) {

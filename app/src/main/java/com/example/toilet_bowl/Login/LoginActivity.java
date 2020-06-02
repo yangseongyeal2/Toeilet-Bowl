@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.toilet_bowl.Main.MainActivity;
 import com.example.toilet_bowl.R;
+import com.example.toilet_bowl.Start.StartActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -75,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Toast.makeText(this,"로그인이 이미 되어있습니다 :"+currentUser.toString(),Toast.LENGTH_LONG).show();
         Intent intent=new Intent(getApplicationContext(), MainActivity.class);
         intent.putExtra("자동로그인","자동로그인성공");
+        //TODO 여기다가 USsernickname 보내기
         startActivity(intent);
         finish();
     }
@@ -98,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                       if(task.isSuccessful()){//로그인 이 성공
                           Toast.makeText(LoginActivity.this,"로그인성공",Toast.LENGTH_LONG).show();
-                          Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                          Intent intent=new Intent(getApplicationContext(), StartActivity.class);
                          // intent.putExtra("nickName",account.getDisplayName());
                          // intent.putExtra("photoURL",String.valueOf(account.getPhotoUrl()));
                           startActivity(intent);

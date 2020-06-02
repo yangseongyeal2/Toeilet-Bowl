@@ -2,11 +2,11 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    >
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,48 +14,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
-            <ImageView
-                android:id="@+id/item_ImageView_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_menu_black_35dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/item_ImageView_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_menu_black_35dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-
+            android:ellipsize="start"
+            android:singleLine="true"
+            android:textSize="30sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_ImageView_menu"
-            app:srcCompat="@drawable/ic_launcher_foreground"
-            tools:ignore="VectorDrawableCompat" />
+            app:layout_constraintTop_toBottomOf="@+id/item_ImageView_menu" />
 
         <TextView
             android:id="@+id/item_contents"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:paddingStart="10dp"
+            android:ellipsize="start"
+            android:singleLine="true"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_title" />
-
         <com.like.LikeButton
+            android:layout_marginTop="10dp"
             android:id="@+id/item_likeButton_likeButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_marginTop="116dp"
             app:anim_scale_factor="2"
             app:circle_end_color="@color/colorAccent"
             app:circle_start_color="@color/colorPrimary"
@@ -67,7 +62,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.353"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/item_contents"
+            app:layout_constraintTop_toBottomOf="@+id/item_contents"
             app:like_drawable="@drawable/thumb_on"
             app:liked="false"
             app:unlike_drawable="@drawable/thumb_off" />
@@ -84,9 +79,9 @@
             android:id="@+id/item_replycount_Imageview"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:src="@drawable/ic_reply_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/item_likecount"
-            android:src="@drawable/ic_reply_24dp"/>
+            app:layout_constraintStart_toEndOf="@+id/item_likecount" />
 
         <TextView
             android:id="@+id/item_replycount"
@@ -95,8 +90,7 @@
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/item_replycount_Imageview"
-            />
+            app:layout_constraintStart_toEndOf="@+id/item_replycount_Imageview" />
 
         <ImageView
             android:id="@+id/item_viewCount"
