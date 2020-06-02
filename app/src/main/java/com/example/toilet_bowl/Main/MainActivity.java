@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private mypage mypage;
     private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
 
-
+//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
