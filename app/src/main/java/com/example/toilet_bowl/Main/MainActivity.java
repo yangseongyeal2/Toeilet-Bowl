@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 //        else {//자동로그인일 경우
 //            sendUserInfoToServer();
 //        }
-
+///test
         bottomNavigationView = findViewById(R.id.bottomNavi);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
