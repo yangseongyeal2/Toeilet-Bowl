@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        //변화
         board =new Board();
         home=new Home();
         mypage=new mypage();
