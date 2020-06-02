@@ -23,6 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fm;
@@ -31,29 +33,30 @@ public class MainActivity extends AppCompatActivity {
     private Home home;
     private Notifications notifications;
     private mypage mypage;
-    private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+    private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
 
-//
+
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent=getIntent();
-        String autoflag=intent.getStringExtra("자동로그인");
-        if(autoflag==null){
-            sendUserInfoToServer();
+        Intent intent = getIntent();
+        String UserNickName= intent.getStringExtra("UserNickName");
+
+        if (UserNickName != null) {
+            sendUserInfoToServer(UserNickName);
         }
-//        else{//자동로그인일 경우
-//
+//        else {//자동로그인일 경우
 //            sendUserInfoToServer();
 //        }
 
-        bottomNavigationView=findViewById(R.id.bottomNavi);
+        bottomNavigationView = findViewById(R.id.bottomNavi);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.bottommenu_home:
                         setFrag(0);
                         break;
@@ -72,19 +75,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //변화
-        board =new Board();
-        home=new Home();
-        mypage=new mypage();
-        notifications=new Notifications();
+        board = new Board();
+        home = new Home();
+        mypage = new mypage();
+        notifications = new Notifications();
         setFrag(0);//첫화면
 
     }
-    private void setFrag(int n){
-        fm=getSupportFragmentManager();
-        ft=fm.beginTransaction();
-        switch (n){
+
+    private void setFrag(int n) {
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
+        switch (n) {
             case 0:
-                ft.replace(R.id.main_frame,home);
+                ft.replace(R.id.main_frame, home);
                 ft.commit();
                 break;
             case 1:
@@ -101,17 +105,20 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-    private void sendUserInfoToServer() {//토큰 서버에 보내기
-        String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+    private void sendUserInfoToServer(String UserNickName) {//토큰 서버에 보내기
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseMessaging.getInstance().subscribeToTopic(uid);//자기 아이디 구독
-        String token= FirebaseInstanceId.getInstance().getToken();
-        Log.d("Token",token);
-        FirebaseUserModel firebaseUserModel=new FirebaseUserModel(
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        Log.d("Token", token);
+        FirebaseUserModel firebaseUserModel = new FirebaseUserModel(
                 token
-                ,uid
-                ,0
-                ,"Level:"+0);
-        assert token != null;
+                , uid
+                , 0
+                , "Level:" + 0
+                , UserNickName
+                , new Date());
 
         mStore.collection("users")
                 .document(uid)
