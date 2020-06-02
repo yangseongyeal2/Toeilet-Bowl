@@ -30,17 +30,7 @@
         app:srcCompat="@drawable/ic_launcher_foreground"
         tools:ignore="VectorDrawableCompat" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
-        android:id="@+id/Board_SwipeRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Board_profileURL"
-        app:layout_constraintVertical_bias="0.0">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/Board_RecyclerVIew"
@@ -49,7 +39,7 @@
             android:layout_marginTop="52dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
              />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <com.github.clans.fab.FloatingActionButton
         android:id="@+id/Board_FloatingActionBtn"
@@ -67,8 +57,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:text="로그아웃"
-
-        app:layout_constraintBottom_toTopOf="@+id/Board_SwipeRefreshLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/Board_profileURL"
         app:layout_constraintTop_toTopOf="parent" />
