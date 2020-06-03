@@ -277,6 +277,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                     }
                 });
             }
+
             @Override
             public void unLiked(LikeButton likeButton) {//싫어요 기능
                 final FirebaseFirestore mStore = FirebaseFirestore.getInstance();
@@ -304,6 +305,17 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 });
             }
         });//좋아요 버튼
+
+        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+               boardInfo = documentSnapshot.toObject(BoardInfo.class);
+                if (boardInfo.getUidList().contains(mFirebaseUser.getUid())) {//이미 좋아요 누른사람은
+                    mLikeButton.setLiked(true);
+                }
+            }
+        });
+
 
 
     }
