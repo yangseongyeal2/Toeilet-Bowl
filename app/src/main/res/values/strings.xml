@@ -10,4 +10,9 @@
     <string name="상담게시판">상담게시판</string>
     <string name="로그아웃">로그아웃</string>
     <string name="nickname">NickName</string>
+
+    <string name="facebook_app_id">285805969126598</string>
+    <string name="fb_login_protocol_scheme">fb285805969126598</string>
+
+
 </resources>

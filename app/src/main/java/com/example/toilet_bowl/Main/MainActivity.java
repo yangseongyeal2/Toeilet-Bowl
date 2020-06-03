@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseMessaging.getInstance().subscribeToTopic(uid);//자기 아이디 구독
         String token = FirebaseInstanceId.getInstance().getToken();
 
-        Log.d("Token", token);
+        //Log.d("Token", token);
         FirebaseUserModel firebaseUserModel = new FirebaseUserModel(
                 token
                 , uid
