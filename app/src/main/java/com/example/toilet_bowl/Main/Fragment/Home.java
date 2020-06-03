@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,11 +21,14 @@ import com.example.toilet_bowl.Adapter.HomeAdapter2;
 import com.example.toilet_bowl.Board.DetailActivity;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
+import com.example.toilet_bowl.model.FirebaseUserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -36,6 +40,7 @@ import java.util.List;
 public class Home extends Fragment {
     private View view;
     private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+    private FirebaseUser mFirebaseUser=FirebaseAuth.getInstance().getCurrentUser();
     private ProgressDialog loadingbar;
     private List<BoardInfo> mBoardList;
     private List<BoardInfo> mBoardList2;
@@ -45,6 +50,7 @@ public class Home extends Fragment {
     private RecyclerView mHomeWaitRecyclerView;
     private BottomNavigationView bottomNavigationView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView mNicknmae_Level;
 
 
     private final FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
@@ -81,6 +87,17 @@ public class Home extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+        mNicknmae_Level=view.findViewById(R.id.home_userNickName_level);
+        mStore.collection("users").document(mFirebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                FirebaseUserModel fm=documentSnapshot.toObject(FirebaseUserModel.class);
+                assert fm != null;
+                String str=fm.getUserNickName()+" "+fm.getNickname();
+                mNicknmae_Level.setText(str);
+            }
+        });
+
 
 
 

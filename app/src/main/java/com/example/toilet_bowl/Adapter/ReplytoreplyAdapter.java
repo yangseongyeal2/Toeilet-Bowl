@@ -88,7 +88,8 @@ public class ReplytoreplyAdapter extends RecyclerView.Adapter<ReplytoreplyAdapte
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         FirebaseUserModel fm=documentSnapshot.toObject(FirebaseUserModel.class);
                         assert fm != null;
-                        holder.mNickname.setText(fm.getNickname());
+                        String str=fm.getUserNickName()+"\n"+"("+fm.getNickname()+")";
+                        holder.mNickname.setText(str);
                     }
                 });
     }

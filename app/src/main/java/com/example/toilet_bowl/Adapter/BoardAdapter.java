@@ -1,5 +1,6 @@
 package com.example.toilet_bowl.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -45,6 +46,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     private OnItemClick mCallback;
     private int count=0;
 
+    private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+
 
     public BoardAdapter(List<BoardInfo> mBoardInfo, Context mContext,FirebaseUser mFirebaseUser,OnItemClick listener) {
         this.mBoardInfo = mBoardInfo;
@@ -75,7 +78,6 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     public void onBindViewHolder(@NonNull final BoardViewHolder holder, final int position) {
 
             final BoardInfo boardInfo=mBoardInfo.get(position);
-
             holder.mTitleTextView.setText(boardInfo.getTitle());
             holder.mContentTextView.setText(boardInfo.getContent());
             holder.mImageView_menu.setOnClickListener(new View.OnClickListener() {//메뉴버튼 클릭 리스너
@@ -85,7 +87,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
                 }
 
                 private void show_menu(View v, String documentId, final int position) {
-                    final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+                  //  final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
                     PopupMenu popup = new PopupMenu(mContext, v);
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
@@ -127,58 +129,12 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
                 }
             });//삭제기능
 
-//            holder.mLikeButton.setOnLikeListener(new OnLikeListener() {//좋아요 기능
-//                @Override
-//                public void liked(LikeButton likeButton) {
-//                    final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
-//                    final DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
-//
-//                    documentReference.update("uidList", FieldValue.arrayUnion(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {//좋아요 누른사람 배열에 추가.
-//                            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                    int count=task.getResult().toObject(boardInfo.getClass()).getUidList().size();
-//                                    holder.mLikecount.setText(String.valueOf(count-1));
-//                                }
-//                            });
-//                            mStore.collection("users").document(boardInfo.getUid())//게시물 올린사람 경험치 +1
-//                                    .update("likecount",FieldValue.increment(1));
-//                        }
-//                    });
-//                }
-//                @Override
-//                public void unLiked(LikeButton likeButton) {//싫어요 기능
-//                    count--;
-////                    Toast.makeText(mContext, "너가 올린 게시물이 아니다", Toast.LENGTH_LONG).show();
-//                    final FirebaseFirestore mStore=FirebaseFirestore.getInstance();
-//                    final DocumentReference documentReference=mStore.collection("Board").document(boardInfo.getDocumentId());
-//
-//                    documentReference.update("uidList", FieldValue.arrayRemove(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                    int count=task.getResult().toObject(boardInfo.getClass()).getUidList().size();
-//                                    holder.mLikecount.setText(String.valueOf(count-1));
-//                                }
-//                            });
-//                            mStore.collection("users").document(boardInfo.getUid())//게시물 올린사람 경험치 -1
-//                                    .update("likecount",FieldValue.increment(-1));
-//                        }
-//                    });//싫어요 누른사람 배열에서 제거.
-//                }
-//            });//좋아요 버튼
-//        if(boardInfo.getUidList().contains(mFirebaseUser.getUid())){//이미 좋아요 누른사람은
-//            holder.mLikeButton.setLiked(true);
-//        }
 
         holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));//좋아요 버튼 갯수
         holder.mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
         //댓글수 가져오기
         holder.mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
+        //올린시간 가져오기
         String date=boardInfo.getDate().toString();
         String date1=date.substring(11,16);
         String date2=date.substring(0,13)+" "+date.substring(30,34);
@@ -189,6 +145,19 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         if(date.substring(4,10).equals(dateTime)){
             holder.mN.setVisibility(View.VISIBLE);
         }
+        //작성자
+        String writer=boardInfo.getUid();
+        mStore.collection("users").document(writer).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                FirebaseUserModel fm=documentSnapshot.toObject(FirebaseUserModel.class);
+                assert fm != null;
+                holder.mWriter.setText("작성자:"+fm.getUserNickName());
+                holder.mWriterLevle.setText("   ("+fm.getNickname()+")");
+            }
+        });
+
 
     }
 
@@ -208,6 +177,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         private TextView mReplycount;
         private TextView mCreatedAt;
         private ImageView mN;
+        private TextView mWriter;
+        private TextView mWriterLevle;
 
        public BoardViewHolder(View itemView) {
            super(itemView);
@@ -220,6 +191,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
            mReplycount=itemView.findViewById(R.id.item_replycount);
            mCreatedAt=itemView.findViewById(R.id.item_board_createdat);
            mN=itemView.findViewById(R.id.item_board_n);
+           mWriter=itemView.findViewById(R.id.item_board_writer);
+           mWriterLevle=itemView.findViewById(R.id.item_board_writerLevel);
 
            itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                @Override

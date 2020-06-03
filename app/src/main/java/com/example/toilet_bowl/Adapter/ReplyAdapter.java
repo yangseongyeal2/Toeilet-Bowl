@@ -133,7 +133,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
            public void onSuccess(DocumentSnapshot documentSnapshot) {
                FirebaseUserModel fm=documentSnapshot.toObject(FirebaseUserModel.class);
                assert fm != null;
-               holder.mNickname.setText(fm.getNickname());
+               String str=fm.getUserNickName()+"\n"+"("+fm.getNickname()+")";
+               holder.mNickname.setText(str);
            }
        });
        holder.mLikebutton.setOnLikeListener(new OnLikeListener() {
@@ -201,8 +202,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                         assert imm != null;
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                        holder.itemView.setBackgroundColor(Color.RED);
-                        //TODO 대댓글 클릭했을때 실행할 방법.
+                        holder.itemView.setBackgroundColor(Color.GRAY);
+
                         textInputLayout_temp.setEndIconOnClickListener(new View.OnClickListener() {//대댓글 달때
                             @Override
                             public void onClick(View v) {
@@ -227,7 +228,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                                         public void onSuccess(Void aVoid) {
                                             textInputLayout_original.setVisibility(View.VISIBLE);
                                             textInputLayout_temp.setVisibility(View.INVISIBLE);
-                                            holder.itemView.setBackgroundColor(Color.WHITE);
+                                            holder.itemView.setBackgroundColor(Color.rgb(224,224,224));
                                             textInputEditText_temp.setText("");
                                             InputMethodManager imm = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
                                             assert imm != null;

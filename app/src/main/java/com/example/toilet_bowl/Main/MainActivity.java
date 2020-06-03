@@ -19,11 +19,14 @@ import com.example.toilet_bowl.model.FirebaseUserModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
@@ -46,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
         if (UserNickName != null) {
             sendUserInfoToServer(UserNickName);
         }
-//        else {//자동로그인일 경우
-//            sendUserInfoToServer();
-//        }
+        else {//자동로그인일 경우
+            updateUserInfoToServer();
+       }
 
         bottomNavigationView = findViewById(R.id.bottomNavi);
 
@@ -81,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         setFrag(0);//첫화면
 
     }
+
+
 
     private void setFrag(int n) {
         fm = getSupportFragmentManager();
@@ -126,6 +131,45 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         // Log.d("시발","업로드성공");
+                    }
+                });
+    }
+    private void updateUserInfoToServer() {
+        String uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        final DocumentReference df=mStore.collection("users").document(uid);
+        mStore.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        FirebaseUserModel fm=documentSnapshot.toObject(FirebaseUserModel.class);
+                        assert fm != null;
+                        int count=fm.getLikecount();
+                        if(count>100){
+                            df.update("nickname","Level"+10);
+                        }else if(count>90){
+                            df.update("nickname","Level"+9);
+                        }else if(count>80){
+                            df.update("nickname","Level"+8);
+                        }else if(count>70){
+                            df.update("nickname","Level"+7);
+                        }else if(count>60){
+                            df.update("nickname","Level"+6);
+                        }else if(count>50){
+                            df.update("nickname","Level"+5);
+                        }else if(count>40){
+                            df.update("nickname","Level"+4);
+                        }else if(count>30){
+                            df.update("nickname","Level"+3);
+                        }else if (count>20){
+                            df.update("nickname","Level"+2);
+                        }else if(count>10){
+                            df.update("nickname","Level"+1);
+                        }else{
+                            df.update("nickname","Level"+0);
+                        }
+
                     }
                 });
     }
