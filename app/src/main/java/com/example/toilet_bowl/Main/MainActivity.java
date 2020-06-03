@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.toilet_bowl.Main.Fragment.Board;
@@ -24,9 +24,11 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+    private BottomNavigationView bottomNavigationView;
+    private FragmentManager fm;
+    private FragmentTransaction ft;
     private Board board;
     private Home home;
     private Notifications notifications;
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 //            sendUserInfoToServer();
 //        }
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavi);
+        bottomNavigationView = findViewById(R.id.bottomNavi);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -81,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFrag(int n) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
         switch (n) {
             case 0:
                 ft.replace(R.id.main_frame, home);
@@ -100,16 +102,15 @@ public class MainActivity extends AppCompatActivity {
                 ft.replace(R.id.main_frame, mypage);
                 ft.commit();
                 break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + n);
         }
     }
 
     private void sendUserInfoToServer(String UserNickName) {//토큰 서버에 보내기
-        String uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseMessaging.getInstance().subscribeToTopic(uid);//자기 아이디 구독
         String token = FirebaseInstanceId.getInstance().getToken();
 
+        Log.d("Token", token);
         FirebaseUserModel firebaseUserModel = new FirebaseUserModel(
                 token
                 , uid
