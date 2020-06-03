@@ -179,7 +179,10 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         holder.mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
         //댓글수 가져오기
         holder.mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
-
+        String date=boardInfo.getDate().toString();
+        String date1=date.substring(11,16);
+        String date2=date.substring(0,13)+" "+date.substring(30,34);
+        holder.mCreatedAt.setText(date1);
 
     }
 
@@ -197,6 +200,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         private TextView mLikecount;
         private TextView mViewcount;
         private TextView mReplycount;
+        private TextView mCreatedAt;
 
        public BoardViewHolder(View itemView) {
            super(itemView);
@@ -207,6 +211,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
            mLikecount=itemView.findViewById(R.id.item_likecount);
            mViewcount=itemView.findViewById(R.id.item_viewcount_textView);
            mReplycount=itemView.findViewById(R.id.item_replycount);
+           mCreatedAt=itemView.findViewById(R.id.item_board_createdat);
 
            itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                @Override

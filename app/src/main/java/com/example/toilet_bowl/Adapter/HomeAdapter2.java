@@ -52,6 +52,10 @@ public class HomeAdapter2 extends RecyclerView.Adapter<HomeAdapter2.HomeAdapter2
         holder.mLikecount.setText(String.valueOf(boardInfo.getUidList().size() - 1));
         holder.mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
         holder.mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
+        String date=boardInfo.getDate().toString();
+        String date1=date.substring(11,16);
+        String date2=date.substring(0,13)+" "+date.substring(30,34);
+        holder.mCreated_at.setText(date1);
     }
 
     @Override
@@ -64,6 +68,7 @@ public class HomeAdapter2 extends RecyclerView.Adapter<HomeAdapter2.HomeAdapter2
         private TextView mLikecount;
         private TextView mReplycount;
         private TextView mViewcount;
+        private TextView mCreated_at;
 
         public HomeAdapter2ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -71,6 +76,7 @@ public class HomeAdapter2 extends RecyclerView.Adapter<HomeAdapter2.HomeAdapter2
             mLikecount = itemView.findViewById(R.id.item_home_like_TextView);
             mReplycount = itemView.findViewById(R.id.item_home_replycount_TextView);
             mViewcount = itemView.findViewById(R.id.item_home_viewcount_TextView);
+            mCreated_at=itemView.findViewById(R.id.item_home_created_at);
 
             itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                 @Override

@@ -1,5 +1,6 @@
 package com.example.toilet_bowl.Main.Fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,26 +37,23 @@ public class mypage extends Fragment {
         mNickname=view.findViewById(R.id.mypage_Nickname);
         mUserNickname=view.findViewById(R.id.mypage_UserNickname);
         mLikecount=view.findViewById(R.id.mypage_likecount);
-
-
         RetrieveALL();
-
-
-
         return view;
     }
 
     private void RetrieveALL() {
+        assert firebaseUser != null;
         mStore.collection("users").document(firebaseUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.getResult()!=null){
                     FirebaseUserModel fm=task.getResult().toObject(FirebaseUserModel.class);
-                    mEmail.setText(firebaseUser.getEmail());
-                    mNickname.setText(fm.getNickname());
-                    mUserNickname.setText(fm.getUserNickName());
-                    mLikecount.setText(String.valueOf(fm.getLikecount()));
-
+                    mEmail.setText("사용중인 Email:"+firebaseUser.getEmail());
+                    assert fm != null;
+                    mNickname.setText("현재 레벨"+fm.getNickname());
+                    mUserNickname.setText("닉네임:"+fm.getUserNickName());
+                    mLikecount.setText("좋아요 받은 갯수:"+String.valueOf(fm.getLikecount()));
                 }
 
 
