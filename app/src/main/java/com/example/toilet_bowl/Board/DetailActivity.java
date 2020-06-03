@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -51,6 +52,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -68,9 +71,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class DetailActivity extends AppCompatActivity implements OnItemClick {
-    private static final String TAG="DetailActivity";
-    private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
-    private final FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+    private static final String TAG = "DetailActivity";
+    private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+    private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private TextView mTitle;
     private TextView mContent;
     private TextInputEditText mEditText;
@@ -85,7 +88,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     //device to device notification
     //private RequestQueue mRequesQue;
     private RequestQueue mRequesQue;
-    private String URL="https://fcm.googleapis.com/fcm/send";
+    private String URL = "https://fcm.googleapis.com/fcm/send";
     private ProgressDialog loadingbar;
     private String mDocumentId_send;
     private TextInputLayout mTextInputLayout;
@@ -101,9 +104,9 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private SliderAdapterExample mSliderAdapterExample;
 
     private ConstraintLayout constraintLayout;
-
-
-
+    private BoardInfo boardInfo;
+    private FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    private LikeButton mLikeButton;
 
 
     @Override
@@ -111,27 +114,28 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         super.onCreate(savedInstanceState);
         //
         final String mDocumentId = getIntent().getStringExtra("DocumentId");//mDocumentId는 디테일 정보받아오기
-        if(mDocumentId!=null){
-            documentReference=mStore.collection("Board").document(mDocumentId);
+        if (mDocumentId != null) {
+            documentReference = mStore.collection("Board").document(mDocumentId);
         }
-        constraintLayout=new ConstraintLayout(this);
+        constraintLayout = new ConstraintLayout(this);
         //
         setContentView(R.layout.activity_detail);
-        mTitle=findViewById(R.id.detail_title);
-        mContent=findViewById(R.id.detail_content);
-        mRecyclerView=findViewById(R.id.detail_recyclerview);
-        mRequesQue= Volley.newRequestQueue(this);
+        mTitle = findViewById(R.id.detail_title);
+        mContent = findViewById(R.id.detail_content);
+        mRecyclerView = findViewById(R.id.detail_recyclerview);
+        mRequesQue = Volley.newRequestQueue(this);
         //
         mTextInputLayout = findViewById(R.id.detail_TextIputLayout);
         mTextInputLayout2 = findViewById(R.id.detail_TextIputLayout2);
-        mEditText=findViewById(R.id.detail_reply_EditText);
-        mEditText2=findViewById(R.id.detail_reply_EditText2);
+        mEditText = findViewById(R.id.detail_reply_EditText);
+        mEditText2 = findViewById(R.id.detail_reply_EditText2);
         //
-        mLikecount=findViewById(R.id.item_detail_like_TextView);
-        mReplycount=findViewById(R.id.item_detail_replycount_TextView);
-        mViewcount=findViewById(R.id.item_detail_viewcount_TextView);
+        mLikecount = findViewById(R.id.item_detail_like_TextView);
+        mReplycount = findViewById(R.id.item_detail_replycount_TextView);
+        mViewcount = findViewById(R.id.item_detail_viewcount_TextView);
+        mLikeButton = findViewById(R.id.item_likeButton_likeButton);
 
-        mDocumentId_send=mDocumentId;
+        mDocumentId_send = mDocumentId;
         //swipeRefreshLayout=findViewById(R.id.detail_SwipeRefreshLayout);
 //        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 //            @Override
@@ -141,10 +145,10 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
 //                swipeRefreshLayout.setRefreshing(false);
 //            }
 //        });
-        mToiletImageView=findViewById(R.id.detail_toiletimage);
-        loadingbar=new ProgressDialog(this);
+        mToiletImageView = findViewById(R.id.detail_toiletimage);
+        loadingbar = new ProgressDialog(this);
 
-        mSliderView=findViewById(R.id.detail_sliderView);
+        mSliderView = findViewById(R.id.detail_sliderView);
         mSliderView.setIndicatorAnimation(IndicatorAnimations.THIN_WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
         mSliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
         mSliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_RIGHT);
@@ -154,7 +158,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         mSliderView.setAutoCycle(false);
 
 
-        mSliderAdapterExample=new SliderAdapterExample(this);
+        mSliderAdapterExample = new SliderAdapterExample(this);
 
         initUid();//uid 전역변수로 사용가능
         upviewcount();//조회수 1올리기
@@ -173,46 +177,48 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 loadingbar.setCanceledOnTouchOutside(false);
                 loadingbar.show();
                 final DocumentReference replyDocumentreference = documentReference.collection("reply").document();
-                if(mEditText.getText()!=null){
+                if (mEditText.getText() != null) {
                     String reply_string = mEditText.getText().toString();
                     assert firebaseUser != null;
-                    final ReplyInfo replyInfo=new ReplyInfo(firebaseUser.getUid(),"0",reply_string,new Date(),replyDocumentreference.getId(), Arrays.asList(""));
+                    final ReplyInfo replyInfo = new ReplyInfo(firebaseUser.getUid(), "0", reply_string, new Date(), replyDocumentreference.getId(), Arrays.asList(""));
                     //mReplyInfoList.add(replyInfo);
                     replyDocumentreference.set(replyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            if(!uid.equals(firebaseUser.getUid())){//다른사람이 내 게시판에 글 올릴떄만 알림
+                            if (!uid.equals(firebaseUser.getUid())) {//다른사람이 내 게시판에 글 올릴떄만 알림
                                 documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        BoardInfo boardInfo=documentSnapshot.toObject(BoardInfo.class);
+                                        // BoardInfo boardInfo = documentSnapshot.toObject(BoardInfo.class);
+                                        boardInfo = documentSnapshot.toObject(BoardInfo.class);
                                         assert boardInfo != null;
-                                        String title=boardInfo.getTitle();
-                                        String cotent=replyInfo.getContent();
-                                        sendNotification(mDocumentId_send,title,cotent);
+                                        String title = boardInfo.getTitle();
+                                        String cotent = replyInfo.getContent();
+                                        sendNotification(mDocumentId_send, title, cotent);
 
                                     }
                                 });
-                            }else if(uid.equals(firebaseUser.getUid())){//올린사람이 댓글을 달았을때 댓글달린사람 uidlist로 매세지보내기.
+                            } else if (uid.equals(firebaseUser.getUid())) {//올린사람이 댓글을 달았을때 댓글달린사람 uidlist로 매세지보내기.
                                 documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                                        final BoardInfo boardInfo=documentSnapshot.toObject(BoardInfo.class);
+                                        //final BoardInfo boardInfo = documentSnapshot.toObject(BoardInfo.class);
+                                        boardInfo = documentSnapshot.toObject(BoardInfo.class);
                                         documentReference.collection("reply").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if(task.getResult()!=null){
-                                                    Set<String>uidset=new HashSet<>();
-                                                    for(QueryDocumentSnapshot data:task.getResult()){
-                                                        ReplyInfo ri=data.toObject(ReplyInfo.class);
-                                                        if(!ri.getUid().equals(uid)){
-                                                            String title=boardInfo.getTitle();
-                                                            String cotent=replyInfo.getContent();
+                                                if (task.getResult() != null) {
+                                                    Set<String> uidset = new HashSet<>();
+                                                    for (QueryDocumentSnapshot data : task.getResult()) {
+                                                        ReplyInfo ri = data.toObject(ReplyInfo.class);
+                                                        if (!ri.getUid().equals(uid)) {
+                                                            String title = boardInfo.getTitle();
+                                                            String cotent = replyInfo.getContent();
                                                             uidset.add(ri.getUid());
                                                         }
                                                     }
-                                                    for(String str:uidset){//중복되지않게 보내기
-                                                        sendNotification(str,boardInfo.getTitle(),replyInfo.getContent());
+                                                    for (String str : uidset) {//중복되지않게 보내기
+                                                        sendNotification(str, boardInfo.getTitle(), replyInfo.getContent());
                                                     }
 
                                                 }
@@ -223,7 +229,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                     }
                                 });
                             }
-                            documentReference.update("replycount",FieldValue.increment(1));//댓글수 1증가.
+                            documentReference.update("replycount", FieldValue.increment(1));//댓글수 1증가.
                             mEditText.setText("");
                             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                             assert imm != null;
@@ -237,16 +243,70 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                             loadingbar.dismiss();
                         }
                     });
-                }else{
-                    Toast.makeText(getApplicationContext(),"댓글을 입력하시오",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "댓글을 입력하시오", Toast.LENGTH_LONG).show();
                 }
             }
         });//그냥 댓글 달때 끝
 
 
+        mLikeButton.setOnLikeListener(new OnLikeListener() {//좋아요 기능
+            @Override
+            public void liked(LikeButton likeButton) {
+                final FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+                documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        final BoardInfo boardInfo = documentSnapshot.toObject(BoardInfo.class);
+                        assert boardInfo != null;
+                        final DocumentReference documentReference = mStore.collection("Board").document(boardInfo.getDocumentId());
+                        documentReference.update("uidList", FieldValue.arrayUnion(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {//좋아요 누른사람 배열에 추가.
+                                documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        int count = task.getResult().toObject(boardInfo.getClass()).getUidList().size();
+                                        mLikecount.setText(String.valueOf(count - 1));
+                                    }
+                                });
+                                mStore.collection("users").document(boardInfo.getUid())//게시물 올린사람 경험치 +1
+                                        .update("likecount", FieldValue.increment(1));
+                            }
+                        });
+                    }
+                });
+            }
+            @Override
+            public void unLiked(LikeButton likeButton) {//싫어요 기능
+                final FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+                documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        final BoardInfo boardInfo = documentSnapshot.toObject(BoardInfo.class);
+                        assert boardInfo != null;
+                        final DocumentReference documentReference = mStore.collection("Board").document(boardInfo.getDocumentId());
+                        documentReference.update("uidList", FieldValue.arrayUnion(mFirebaseUser.getUid())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {//좋아요 누른사람 배열에 추가.
+                                documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        int count = task.getResult().toObject(boardInfo.getClass()).getUidList().size();
+                                        mLikecount.setText(String.valueOf(count - 1));
+                                    }
+                                });
+                                mStore.collection("users").document(boardInfo.getUid())//게시물 올린사람 경험치 +1
+                                        .update("likecount", FieldValue.increment(-1));
+                            }
+                        });
+                    }
+                });
+            }
+        });//좋아요 버튼
+
 
     }
-
 
 
     private void upviewcount() {
@@ -260,7 +320,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        uid=document.get("uid").toString();
+                        uid = document.get("uid").toString();
                     }
                 }
             }
@@ -275,67 +335,66 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 assert boardInfo != null;
                 mTitle.setText(boardInfo.getTitle());
                 mContent.setText(boardInfo.getContent());
-                mLikecount.setText(String.valueOf(boardInfo.getUidList().size()-1));
+                mLikecount.setText(String.valueOf(boardInfo.getUidList().size() - 1));
                 mReplycount.setText(String.valueOf(boardInfo.getReplycount()));
                 mViewcount.setText(String.valueOf(boardInfo.getViewcount()));
                 //sliderview
-                if(boardInfo.getmDownloadURIList().size()!=0){
-                    for(int i=0;i<boardInfo.getmDownloadURIList().size();i++){
-                        String url=boardInfo.getmDownloadURIList().get(i);
-                        SliderItem sliderItem=new SliderItem(url);
+                if (boardInfo.getmDownloadURIList().size() != 0) {
+                    for (int i = 0; i < boardInfo.getmDownloadURIList().size(); i++) {
+                        String url = boardInfo.getmDownloadURIList().get(i);
+                        SliderItem sliderItem = new SliderItem(url);
                         mSliderAdapterExample.addItem(sliderItem);
-                        if(i==boardInfo.getmDownloadURIList().size()-1){
+                        if (i == boardInfo.getmDownloadURIList().size() - 1) {
                             mSliderView.setSliderAdapter(mSliderAdapterExample);
                         }
                     }
-                }else{
+                } else {
 //                    Log.d("슬라이드","안보이게함");
                     //TODO 여기 텍스트만 있을때 사진 없애기 ..
                     mSliderView.setVisibility(View.INVISIBLE);
                     mToiletImageView.setVisibility(View.VISIBLE);
 
 
-
-
-
                 }
 
             }
         });
 
     }
-    private void retreiveReply(final DocumentReference documentReference){
+
+    private void retreiveReply(final DocumentReference documentReference) {
         loadingbar.setTitle("Set profile image");
         loadingbar.setMessage("pleas wait업로딩중");
         loadingbar.setCanceledOnTouchOutside(false);
         loadingbar.show();
-        CollectionReference collectionReference=documentReference.collection("reply");
+        CollectionReference collectionReference = documentReference.collection("reply");
         collectionReference
                 .orderBy("date", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<ReplyInfo> list=new ArrayList<>();
-                if(task.getResult()!=null) {
-                    for (DocumentSnapshot documentSnapshot : task.getResult()){
-                        ReplyInfo replyInfo=documentSnapshot.toObject(ReplyInfo.class);
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        List<ReplyInfo> list = new ArrayList<>();
+                        if (task.getResult() != null) {
+                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                ReplyInfo replyInfo = documentSnapshot.toObject(ReplyInfo.class);
 
-                        assert replyInfo != null;
-                        if(replyInfo.getDeleted_at().equals("0")){
-                            list.add(replyInfo);
+                                assert replyInfo != null;
+                                if (replyInfo.getDeleted_at().equals("0")) {
+                                    list.add(replyInfo);
+                                }
+                            }
+                            mReplyAdapter = new ReplyAdapter(list, documentReference, DetailActivity.this, DetailActivity.this
+                                    , mTextInputLayout, mTextInputLayout2, mEditText, mEditText2);
+                            mRecyclerView.setAdapter(mReplyAdapter);
+                            loadingbar.dismiss();
                         }
                     }
-                    mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this
-                            ,mTextInputLayout,mTextInputLayout2,mEditText,mEditText2);
-                    mRecyclerView.setAdapter(mReplyAdapter);
-                    loadingbar.dismiss();
-                }
-            }
-        });
+                });
     }
-    private void updateReply(final DocumentReference documentReference){
-        documentReference.collection("reply").orderBy("date", Query.Direction.ASCENDING).whereEqualTo("deleted_at","0")
+
+    private void updateReply(final DocumentReference documentReference) {
+        documentReference.collection("reply").orderBy("date", Query.Direction.ASCENDING).whereEqualTo("deleted_at", "0")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
 
                     @Override
@@ -345,17 +404,17 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
 
                             return;
                         }
-                        List<ReplyInfo> list=new ArrayList<>();
+                        List<ReplyInfo> list = new ArrayList<>();
 
                         for (QueryDocumentSnapshot doc : value) {
-                            ReplyInfo replyInfo=doc.toObject(ReplyInfo.class);
+                            ReplyInfo replyInfo = doc.toObject(ReplyInfo.class);
 
 
-                                list.add(replyInfo);
+                            list.add(replyInfo);
 
                         }
-                        mReplyAdapter=new ReplyAdapter(list,documentReference,DetailActivity.this,DetailActivity.this
-                                ,mTextInputLayout,mTextInputLayout2,mEditText,mEditText2);
+                        mReplyAdapter = new ReplyAdapter(list, documentReference, DetailActivity.this, DetailActivity.this
+                                , mTextInputLayout, mTextInputLayout2, mEditText, mEditText2);
                         mRecyclerView.setAdapter(mReplyAdapter);
 
                     }
@@ -363,19 +422,19 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     }
 
 
-
     @Override
     public void onClick(String value) {//어댑터에서 클릭후 오는 정보는 여기로옴
         // value this data you receive when increment() / decrement()
-        if(value.equals("실시간 댓글 삭제")){
+        if (value.equals("실시간 댓글 삭제")) {
             retreiveReply(documentReference);
         }
     }
 
-    void subscribe(String mDocumentId){
+    void subscribe(String mDocumentId) {
         FirebaseMessaging.getInstance().subscribeToTopic(mDocumentId);
     }
-    private void sendNotification(String documentId,String title,String content){
+
+    private void sendNotification(String documentId, String title, String content) {
         /* our json object will lokk loke
         {
             "to": "topics/topic name",
@@ -385,19 +444,19 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
             }
         }
         */
-        JSONObject mainObj=new JSONObject();
+        JSONObject mainObj = new JSONObject();
         try {
-            mainObj.put("to","/topics/"+documentId);
-            JSONObject notificationObj=new JSONObject();
-            notificationObj.put("title",title+"에 댓글이 달렸습니다");
-            notificationObj.put("body","댓글:"+content);
-            notificationObj.put("documentId",mDocumentId_send);
+            mainObj.put("to", "/topics/" + documentId);
+            JSONObject notificationObj = new JSONObject();
+            notificationObj.put("title", title + "에 댓글이 달렸습니다");
+            notificationObj.put("body", "댓글:" + content);
+            notificationObj.put("documentId", mDocumentId_send);
 
-           // mainObj.put("notification",notificationObj);
-            mainObj.put("data",notificationObj);
+            // mainObj.put("notification",notificationObj);
+            mainObj.put("data", notificationObj);
 
 
-            JsonObjectRequest request=new JsonObjectRequest(com.android.volley.Request.Method.POST, URL,
+            JsonObjectRequest request = new JsonObjectRequest(com.android.volley.Request.Method.POST, URL,
                     mainObj,
                     new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
@@ -409,13 +468,13 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            }){
+            }) {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String ,String> header=new HashMap<>();
-                    header.put("content-type","application/json");
-                    header.put("authorization","key=AAAAgGWB2_M:APA91bHQEzEfW7ZbMrfZNy_fBF90PEdsoEvOs32Ik-ae9N_3hE-p9HO5GVKy_7yVqw5MMxuCQvNBI4h_r_FkssbkrsjkMkRAFiKsbhq3GoyQHVWfmIjWk9Xf4Bk_89hc4dXFadIdMJeA");
-                    return  header;
+                    Map<String, String> header = new HashMap<>();
+                    header.put("content-type", "application/json");
+                    header.put("authorization", "key=AAAAgGWB2_M:APA91bHQEzEfW7ZbMrfZNy_fBF90PEdsoEvOs32Ik-ae9N_3hE-p9HO5GVKy_7yVqw5MMxuCQvNBI4h_r_FkssbkrsjkMkRAFiKsbhq3GoyQHVWfmIjWk9Xf4Bk_89hc4dXFadIdMJeA");
+                    return header;
                 }
             };
             mRequesQue.add(request);
@@ -425,8 +484,6 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
 
 
     }
-
-
 
 
 }

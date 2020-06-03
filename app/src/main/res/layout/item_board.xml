@@ -47,24 +47,14 @@
             app:layout_constraintTop_toBottomOf="@+id/item_title" />
 
 
-        <com.like.LikeButton
+        <ImageView
             android:id="@+id/item_likeButton_likeButton"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            app:anim_scale_factor="2"
-            app:circle_end_color="@color/colorAccent"
-            app:circle_start_color="@color/colorPrimary"
-            app:dots_primary_color="@color/colorAccent"
-            app:dots_secondary_color="@color/colorPrimary"
-            app:icon_size="25dp"
-            app:icon_type="heart"
-            app:is_enabled="true"
+            android:layout_width="35sp"
+            android:layout_height="35sp"
+            android:src="@drawable/ic_thumb_up_black_35dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/item_likecount"
-            app:layout_constraintTop_toBottomOf="@+id/item_contents"
-            app:like_drawable="@drawable/thumb_on"
-            app:liked="false"
-            app:unlike_drawable="@drawable/thumb_off" />
+            app:layout_constraintTop_toBottomOf="@+id/item_contents"/>
 
         <TextView
             android:id="@+id/item_likecount"
@@ -111,12 +101,19 @@
             android:id="@+id/item_board_createdat"
             android:layout_width="wrap_content"
             android:layout_height="35sp"
+            android:layout_marginStart="20dp"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/item_likeButton_likeButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_contents" />
-
+        <ImageView
+            android:id="@+id/item_board_n"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/item_board_createdat"
+            app:layout_constraintTop_toBottomOf="@+id/item_contents"
+            app:srcCompat="@drawable/n" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

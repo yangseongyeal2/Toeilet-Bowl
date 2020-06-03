@@ -1,9 +1,11 @@
 package com.example.toilet_bowl.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -56,6 +59,12 @@ public class HomeAdapter2 extends RecyclerView.Adapter<HomeAdapter2.HomeAdapter2
         String date1=date.substring(11,16);
         String date2=date.substring(0,13)+" "+date.substring(30,34);
         holder.mCreated_at.setText(date1);
+        String dateTime2=new Date().toString();
+        String dateTime=dateTime2.substring(4,10);
+        Log.d("date1",dateTime);
+        if(date.substring(4,10).equals(dateTime)){
+            holder.mN.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -69,6 +78,7 @@ public class HomeAdapter2 extends RecyclerView.Adapter<HomeAdapter2.HomeAdapter2
         private TextView mReplycount;
         private TextView mViewcount;
         private TextView mCreated_at;
+        private ImageView mN;
 
         public HomeAdapter2ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,6 +87,7 @@ public class HomeAdapter2 extends RecyclerView.Adapter<HomeAdapter2.HomeAdapter2
             mReplycount = itemView.findViewById(R.id.item_home_replycount_TextView);
             mViewcount = itemView.findViewById(R.id.item_home_viewcount_TextView);
             mCreated_at=itemView.findViewById(R.id.item_home_created_at);
+            mN=itemView.findViewById(R.id.item_home_n);
 
             itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                 @Override
