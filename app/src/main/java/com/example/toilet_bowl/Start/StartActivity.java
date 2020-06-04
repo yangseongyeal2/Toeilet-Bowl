@@ -3,7 +3,7 @@ package com.example.toilet_bowl.Start;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
-
+import android.util.Log;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,7 +45,7 @@ public class StartActivity extends AppCompatActivity {
         Enickname=findViewById(R.id.start_UserNickname);
         loadingbar=new ProgressDialog(StartActivity.this);
         adapter = new SliderAdapter(this);
-        check();
+        //check();
 
         for(int a:images){
             adapter.addItem(a);
@@ -76,10 +76,12 @@ public class StartActivity extends AppCompatActivity {
         loadingbar.setMessage("서버에 접속중");
         loadingbar.setCanceledOnTouchOutside(false);
         loadingbar.show();
-        mStore.collection("user").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        Log.d("UID",firebaseUser.getUid());
+        mStore.collection("users").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Enickname.setClickable(true);
+                Log.d("찾기성공",firebaseUser.getUid());
                 Toast.makeText(getApplicationContext(),"서버에이미 정보가 있음",Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(getApplicationContext(), MainActivity.class);
                 loadingbar.dismiss();
@@ -90,6 +92,7 @@ public class StartActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Log.d("찾기실패",firebaseUser.getUid());
                 loadingbar.dismiss();
             }
         });
