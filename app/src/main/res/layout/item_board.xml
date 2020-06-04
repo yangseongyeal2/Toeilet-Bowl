@@ -52,6 +52,7 @@
             android:singleLine="true"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="@color/colorDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_ImageView_menu" />
@@ -71,8 +72,8 @@
 
         <ImageView
             android:id="@+id/item_likeButton_likeButton"
-            android:layout_width="35sp"
-            android:layout_height="35sp"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
             android:src="@drawable/ic_thumb_up_black_35dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/item_likecount"
@@ -80,15 +81,15 @@
 
         <TextView
             android:id="@+id/item_likecount"
-            android:layout_width="35sp"
-            android:layout_height="35sp"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
             app:layout_constraintEnd_toStartOf="@+id/item_replycount_Imageview"
             app:layout_constraintTop_toTopOf="@+id/item_likeButton_likeButton" />
 
         <ImageView
             android:id="@+id/item_replycount_Imageview"
-            android:layout_width="35sp"
-            android:layout_height="35sp"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
             android:src="@drawable/ic_reply_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/item_replycount"
@@ -96,16 +97,16 @@
 
         <TextView
             android:id="@+id/item_replycount"
-            android:layout_width="35sp"
-            android:layout_height="35sp"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/item_viewCount"
             app:layout_constraintTop_toBottomOf="@+id/item_contents" />
 
         <ImageView
             android:id="@+id/item_viewCount"
-            android:layout_width="35sp"
-            android:layout_height="35sp"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
             android:src="@drawable/ic_viewcount_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/item_viewcount_textView"
@@ -113,8 +114,8 @@
 
         <TextView
             android:id="@+id/item_viewcount_textView"
-            android:layout_width="35sp"
-            android:layout_height="35sp"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_contents" />
@@ -122,9 +123,10 @@
         <TextView
             android:id="@+id/item_board_createdat"
             android:layout_width="wrap_content"
-            android:layout_height="35sp"
+            android:layout_height="20sp"
             android:layout_marginStart="20dp"
-            android:textSize="25sp"
+            android:textSize="15sp"
+            android:textColor="@color/colorDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_contents" />
