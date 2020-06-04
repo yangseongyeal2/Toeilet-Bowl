@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.toilet_bowl.Login.LoginActivity;
 import com.example.toilet_bowl.Main.Fragment.Board;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.Main.Fragment.Home;
@@ -19,6 +20,7 @@ import com.example.toilet_bowl.model.FirebaseUserModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,13 +46,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("UID",FirebaseAuth.getInstance().getCurrentUser().getUid());
         Intent intent = getIntent();
         String UserNickName= intent.getStringExtra("UserNickName");
-        if (UserNickName != null) {
+        if (UserNickName!= null) {
             sendUserInfoToServer(UserNickName);
         }
         else {//자동로그인일 경우
-            updateUserInfoToServer();
+            if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+                updateUserInfoToServer();
+                //sendUserInfoToServer(UserNickName);
+            }else{
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                finish();
+            }
+
        }
 
         bottomNavigationView = findViewById(R.id.bottomNavi);
@@ -136,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void updateUserInfoToServer() {
         String uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        Log.d("UID",uid);
         final DocumentReference df=mStore.collection("users").document(uid);
         mStore.collection("users")
                 .document(uid)

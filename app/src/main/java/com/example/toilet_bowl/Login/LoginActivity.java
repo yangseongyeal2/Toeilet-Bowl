@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         try{
-            updateUI(currentUser);
+            updateUI(currentUser);//로그인되있으면 자동로그인
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -109,14 +109,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void updateUI(FirebaseUser currentUser) {//자동로그인 이미 로그인이 되있음
         Toast.makeText(this,"로그인이 이미 되어있습니다 :"+currentUser.toString(),Toast.LENGTH_LONG).show();
-        Intent intent=new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent=new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra("자동로그인","자동로그인성공");
         startActivity(intent);
         finish();
     }
-    private void updateUI_facebook(FirebaseUser currentUser) {//자동로그인 이미 로그인이 되있음
-        Toast.makeText(this,"로그인이 이미 되어있습니다 :"+currentUser.toString(),Toast.LENGTH_LONG).show();
-        Intent intent=new Intent(getApplicationContext(), StartActivity.class);
+    private void updateUI_facebook(FirebaseUser currentUser) {//페이스북 로그인 성공시. 물론 자동로그인 아님
+        Intent intent=new Intent(LoginActivity.this, StartActivity.class);
         startActivity(intent);
         finish();
     }
