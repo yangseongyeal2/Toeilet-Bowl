@@ -14,23 +14,14 @@
     <list default="true" id="25e48ff5-50fd-4305-843e-51f76ee89109" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/BoardAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/BoardAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/HomeAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/HomeAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/HomeAdapter2.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/HomeAdapter2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/ReplyAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/ReplyAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/ReplytoreplyAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/ReplytoreplyAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Board/DetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Board/DetailActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_detail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_detail.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_detail2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_reply.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_reply.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_replyinreply.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_replyinreply.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_6_API_26" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="LMG710N405d1b3b" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -72,7 +63,7 @@
     <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-06-07T10:46:58.845Z" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/res/layout" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../kupleApp" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -245,7 +236,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591529912971</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="시간 정보 업데이트 완료">
+      <created>1591541652787</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1591541652787</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -272,7 +270,8 @@
     <MESSAGE value="로그인 구현완료" />
     <MESSAGE value="메인 매경색이랑 위치 조정 완료" />
     <MESSAGE value="에디트텍스트 디테일 자동켜짐 수정완료" />
-    <option name="LAST_COMMIT_MESSAGE" value="에디트텍스트 디테일 자동켜짐 수정완료" />
+    <MESSAGE value="시간 정보 업데이트 완료" />
+    <option name="LAST_COMMIT_MESSAGE" value="시간 정보 업데이트 완료" />
   </component>
   <component name="WindowStateProjectService">
     <state x="676" y="164" key="#app" timestamp="1591282348657">
@@ -283,22 +282,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591535777796" />
-    <state x="676" y="164" key="#git" timestamp="1591541473566">
+    <state x="676" y="164" key="#git" timestamp="1591542898579">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="676" y="164" key="#git/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541473566" />
+    <state x="676" y="164" key="#git/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591542898579" />
     <state x="817" y="332" key="AndroidCreateXmlResourceDialog" timestamp="1591523998742">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="332" key="AndroidCreateXmlResourceDialog/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591523998742" />
-    <state x="522" y="113" key="CommitChangelistDialog2" timestamp="1591529912058">
+    <state x="476" y="77" key="CommitChangelistDialog2" timestamp="1591541789964">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="522" y="113" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591529912058" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1591515696046">
+    <state x="476" y="77" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541789964" />
+    <state x="1356" y="225" key="FileChooserDialogImpl" timestamp="1591541993298">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591515696046" />
+    <state x="1356" y="225" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541993298" />
     <state width="1877" height="280" key="GridCell.Tab.0.bottom" timestamp="1591541190510">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -315,10 +314,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="280" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541190510" />
-    <state x="552" y="241" key="Vcs.Push.Dialog.v2" timestamp="1591526614163">
+    <state x="552" y="241" key="Vcs.Push.Dialog.v2" timestamp="1591541653938">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="241" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591526614163" />
+    <state x="552" y="241" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541653938" />
     <state x="99" y="91" width="1736" height="856" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1591531519567">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
