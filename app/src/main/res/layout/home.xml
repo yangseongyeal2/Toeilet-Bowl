@@ -5,28 +5,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_home_refresh1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/main_background">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPurple">
+            android:layout_height="match_parent"
+            android:background="@color/main_background">
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/home_userNickName_level"
@@ -88,8 +87,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="20dp"
+                        android:layout_marginTop="52dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintTop_toBottomOf="@+id/home_waittingRequest_TextView" />
+                        app:layout_constraintTop_toBottomOf="@+id/home_waittingRequest_TextView"
+                        tools:layout_editor_absoluteX="20dp" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -106,6 +107,6 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+<!--    </ScrollView>-->
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
