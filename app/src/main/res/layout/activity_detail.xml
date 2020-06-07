@@ -118,11 +118,12 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorDarkGray"
                 android:text="댓글"
-                android:textStyle="bold"
-                android:textColor="@color/colorWhite"
                 android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@+id/detail_LinearLayout"
-                tools:layout_editor_absoluteX="16dp" />
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detail_LinearLayout" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detail_recyclerview"
                 android:layout_width="match_parent"
