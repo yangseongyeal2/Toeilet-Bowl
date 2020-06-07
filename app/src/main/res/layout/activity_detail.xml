@@ -112,6 +112,18 @@
             </LinearLayout>
 
 
+            <TextView
+                android:id="@+id/detail_reply_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorDarkGray"
+                android:text="댓글"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detail_LinearLayout" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detail_recyclerview"
                 android:layout_width="match_parent"
@@ -124,7 +136,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_LinearLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/detail_reply_textView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
