@@ -11,7 +11,14 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25e48ff5-50fd-4305-843e-51f76ee89109" name="Default Changelist" comment="" />
+    <list default="true" id="25e48ff5-50fd-4305-843e-51f76ee89109" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/login_btn.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/login_font.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,9 +41,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="resourceFile" />
         <option value="Class" />
         <option value="layoutResourceFile" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
@@ -59,18 +66,17 @@
     <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-06-07T16:04:32.214Z" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/res/font" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\git\app\src\main\res\layout" />
-      <recent name="C:\Users\LEE\AndroidStudioProjects\Toeilet-Bowl\app\src\main\res\drawable" />
-      <recent name="C:\git\app\src\main\res\drawable" />
-      <recent name="C:\git\app\src\main\res\drawable-v24" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.example.toilet_bowl.Adapter" />
+      <recent name="com.example.toilet_bowl.Interface" />
+      <recent name="com.example.toilet_bowl" />
     </key>
     <key name="android.template.packageName">
       <recent name="com.example.toilet_bowl" />
@@ -78,10 +84,12 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.example.toilet_bowl.Login" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="com.example.toilet_bowl.Adapter" />
-      <recent name="com.example.toilet_bowl.Interface" />
-      <recent name="com.example.toilet_bowl" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\LEE\AndroidStudioProjects\Toeilet-Bowl\app\src\main\res\font" />
+      <recent name="C:\git\app\src\main\res\layout" />
+      <recent name="C:\Users\LEE\AndroidStudioProjects\Toeilet-Bowl\app\src\main\res\drawable" />
+      <recent name="C:\git\app\src\main\res\drawable" />
+      <recent name="C:\git\app\src\main\res\drawable-v24" />
     </key>
   </component>
   <component name="RunManager">
@@ -253,7 +261,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591545828197</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="사진">
+      <created>1591548557345</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1591548557345</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -283,7 +298,8 @@
     <MESSAGE value="시간 정보 업데이트 완료" />
     <MESSAGE value="업데이트" />
     <MESSAGE value="노티피케이션 푸쉬" />
-    <option name="LAST_COMMIT_MESSAGE" value="노티피케이션 푸쉬" />
+    <MESSAGE value="사진" />
+    <option name="LAST_COMMIT_MESSAGE" value="사진" />
   </component>
   <component name="WindowStateProjectService">
     <state x="676" y="164" key="#app" timestamp="1591282348657">
@@ -294,19 +310,24 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591535777796" />
-    <state x="676" y="164" key="#git" timestamp="1591548305984">
+    <state x="676" y="164" key="#git" timestamp="1591549443195">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="676" y="164" key="#git/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591548305984" />
+    <state x="676" y="164" key="#git/0.0.1920.1040@0.0.1920.1040" timestamp="1591549443195" />
+    <state x="540" y="275" key="AndroidCreateResourceFileDialog" timestamp="1591549128648">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="540" y="275" key="AndroidCreateResourceFileDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1591549128648" />
     <state x="817" y="332" key="AndroidCreateXmlResourceDialog" timestamp="1591523998742">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="332" key="AndroidCreateXmlResourceDialog/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591523998742" />
-    <state x="476" y="77" key="CommitChangelistDialog2" timestamp="1591548533723">
+    <state x="476" y="77" key="CommitChangelistDialog2" timestamp="1591548556553">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="476" y="77" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591545827270" />
-    <state x="476" y="77" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1591548533723" />
+    <state x="476" y="77" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1591548556553" />
     <state x="1356" y="225" key="FileChooserDialogImpl" timestamp="1591546494905">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -327,10 +348,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="280" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541190510" />
-    <state x="552" y="241" key="Vcs.Push.Dialog.v2" timestamp="1591545830148">
+    <state x="552" y="241" key="Vcs.Push.Dialog.v2" timestamp="1591548558898">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="241" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591545830148" />
+    <state x="552" y="241" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1591548558898" />
     <state x="99" y="91" width="1736" height="856" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1591531519567">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
