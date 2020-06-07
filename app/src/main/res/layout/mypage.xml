@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/main_background">
 
     <TextView
         android:id="@+id/mypage_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="60dp"
         android:text="@string/마이페이지"
+        android:textAlignment="center"
+        android:textColor="@color/colorDark"
+        android:textSize="60dp"
+        android:textStyle="bold"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,27 +23,35 @@
         android:id="@+id/mypage_email"
         android:layout_width="match_parent"
         android:layout_height="30sp"
+        android:layout_margin="20dp"
         android:text="이메일"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mypage_title" />
 
     <TextView
+        android:layout_margin="20dp"
         android:id="@+id/mypage_UserNickname"
         android:layout_width="match_parent"
         android:layout_height="30sp"
         android:text="유저닉네임"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mypage_email" />
 
     <TextView
+        android:layout_margin="20dp"
         android:id="@+id/mypage_Nickname"
         android:layout_width="match_parent"
         android:layout_height="30sp"
+        android:textSize="20sp"
         android:text="레벨"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mypage_UserNickname" />
 
     <TextView
+        android:textSize="20sp"
+        android:layout_margin="20dp"
         android:id="@+id/mypage_likecount"
         android:layout_width="match_parent"
         android:layout_height="30sp"
@@ -49,10 +60,23 @@
         app:layout_constraintTop_toBottomOf="@+id/mypage_Nickname" />
 
     <TextView
+        android:textSize="20sp"
+        android:text="생성날짜"
+        android:layout_margin="20dp"
         android:id="@+id/mypage_created_at"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mypage_likecount" />
+
+    <Button
+        android:layout_marginTop="15dp"
+        android:id="@+id/mypage_changeNick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="닉네임 바꾸기"
+        app:layout_constraintEnd_toEndOf="@+id/mypage_created_at"
+        app:layout_constraintStart_toStartOf="@+id/mypage_created_at"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_created_at" />
 </androidx.constraintlayout.widget.ConstraintLayout>
