@@ -1,6 +1,7 @@
 package com.example.toilet_bowl.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -88,10 +89,20 @@ public class ReplytoreplyAdapter extends RecyclerView.Adapter<ReplytoreplyAdapte
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         FirebaseUserModel fm=documentSnapshot.toObject(FirebaseUserModel.class);
                         assert fm != null;
-                        String str=fm.getUserNickName()+"\n"+"("+fm.getNickname()+")";
+                        String date2=replyInfo.getDate().toString().substring(11,13);//시간부분
+                        int hour=(Integer.parseInt(date2)+9)%24;
+                        String finaldate=String.valueOf(hour)+replyInfo.getDate().toString().substring(13,16);
+                        Log.d("홈 댓글시간",finaldate);
+                        String str=fm.getUserNickName()+"("+fm.getNickname()+")\n"+finaldate;
                         holder.mNickname.setText(str);
                     }
                 });
+        String dateTime2 = new Date().toString();
+        String dateTime = replyInfo.getDate().toString().substring(4, 10);
+        Log.d("date1", dateTime);
+        if (dateTime2.substring(4, 10).equals(dateTime)) {
+            holder.mN.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -101,10 +112,11 @@ public class ReplytoreplyAdapter extends RecyclerView.Adapter<ReplytoreplyAdapte
 
     class ReplytoreplyAdapterViewHolder extends RecyclerView.ViewHolder {
         private TextView mContent;
-        private ImageView mMenu;
+        private ImageView mMenu,mN;
         private TextView mNickname;
         private LikeButton mLikebutton;
         private TextView mLikecount;
+
 
        ReplytoreplyAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -113,6 +125,7 @@ public class ReplytoreplyAdapter extends RecyclerView.Adapter<ReplytoreplyAdapte
            mNickname=itemView.findViewById(R.id.item_nickname_level);
            mLikebutton=itemView.findViewById(R.id.item_reply_likebutton);
            mLikecount=itemView.findViewById(R.id.item_reply_likecount);
+           mN=itemView.findViewById(R.id.reply_new);
 
         }
     }

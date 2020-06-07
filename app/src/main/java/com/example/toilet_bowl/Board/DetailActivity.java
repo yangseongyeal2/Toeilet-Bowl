@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -61,6 +64,7 @@ import com.smarteist.autoimageslider.SliderView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -104,9 +108,11 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
     private SliderAdapterExample mSliderAdapterExample;
 
     private ConstraintLayout constraintLayout;
+    private ScrollView detail_ScrollView;
     private BoardInfo boardInfo;
     private FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private LikeButton mLikeButton;
+
 
 
     @Override
@@ -118,11 +124,10 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
             documentReference = mStore.collection("Board").document(mDocumentId);
         }
         constraintLayout = new ConstraintLayout(this);
-
-
         //
 
         setContentView(R.layout.activity_detail);
+        detail_ScrollView=findViewById(R.id.detail_ScrollView);
         mTitle = findViewById(R.id.detail_title);
         mContent = findViewById(R.id.detail_content);
         mRecyclerView = findViewById(R.id.detail_recyclerview);
@@ -172,6 +177,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         //updateReply(documentReference);
         mRecyclerView.setAdapter(mReplyAdapter);
 
+
         mTextInputLayout.setEndIconOnClickListener(new View.OnClickListener() {//에딧텍스트 업로드
             @Override
             public void onClick(View v) {//그냥 댓글 달때
@@ -183,7 +189,10 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                 if (mEditText.getText() != null) {
                     String reply_string = mEditText.getText().toString();
                     assert firebaseUser != null;
+
+
                     final ReplyInfo replyInfo = new ReplyInfo(firebaseUser.getUid(), "0", reply_string, new Date(), replyDocumentreference.getId(), Arrays.asList(""));
+
                     //mReplyInfoList.add(replyInfo);
                     replyDocumentreference.set(replyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -238,6 +247,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                             assert imm != null;
                             imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
                             retreiveReply(documentReference);
+
                             loadingbar.dismiss();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -347,6 +357,8 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 BoardInfo boardInfo = documentSnapshot.toObject(BoardInfo.class);
+
+               //스크롤뷰 위치지정
                 assert boardInfo != null;
                 mTitle.setText(boardInfo.getTitle());
                 mContent.setText(boardInfo.getContent());
@@ -384,7 +396,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
         loadingbar.show();
         CollectionReference collectionReference = documentReference.collection("reply");
         collectionReference
-                .orderBy("date", Query.Direction.ASCENDING)
+                .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -400,8 +412,9 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
                                 }
                             }
                             mReplyAdapter = new ReplyAdapter(list, documentReference, DetailActivity.this, DetailActivity.this
-                                    , mTextInputLayout, mTextInputLayout2, mEditText, mEditText2);
+                                    , mTextInputLayout, mTextInputLayout2, mEditText, mEditText2,detail_ScrollView);
                             mRecyclerView.setAdapter(mReplyAdapter);
+
                             loadingbar.dismiss();
                         }
                     }
@@ -429,7 +442,7 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
 
                         }
                         mReplyAdapter = new ReplyAdapter(list, documentReference, DetailActivity.this, DetailActivity.this
-                                , mTextInputLayout, mTextInputLayout2, mEditText, mEditText2);
+                                , mTextInputLayout, mTextInputLayout2, mEditText, mEditText2,detail_ScrollView);
                         mRecyclerView.setAdapter(mReplyAdapter);
 
                     }

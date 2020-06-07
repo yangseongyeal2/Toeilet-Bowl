@@ -12,12 +12,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.toilet_bowl.Interface.OnItemClick;
@@ -71,6 +73,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     private  ReplytoreplyAdapter mReplytoreplyAdapter;
     private List<ReplyInfo> mReplyList;
     private int count=0;
+    private ScrollView scrollView;
+    //private ScrollView detail_ScrollView;
+
 
 
 
@@ -88,7 +93,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
 
 
     public ReplyAdapter(List<ReplyInfo> mReplyList,DocumentReference documentReference_reply,Context context,OnItemClick listener
-            ,TextInputLayout t1,TextInputLayout t2,TextInputEditText e1,TextInputEditText e2) {//생성자
+            ,TextInputLayout t1,TextInputLayout t2,TextInputEditText e1,TextInputEditText e2,ScrollView s1) {//생성자
         this.mReplyList = mReplyList;
         this.documentReference_reply=documentReference_reply;
         this.mContext=context;
@@ -97,6 +102,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         textInputLayout_temp=t2;
         textInputEditText_original=e1;
         textInputEditText_temp=e2;
+        scrollView=s1;
     }
     public ReplyAdapter(){}
 
@@ -108,6 +114,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
 
     @Override
     public void onBindViewHolder(@NonNull final ReplyAdapter.ReplyViewHolder holder, final int position) {
+        final ConstraintLayout constraintLayout = new ConstraintLayout(mContext);
         final ReplyInfo replyInfo=mReplyList.get(position);
         final DocumentReference replyInreplyRef=documentReference_reply//대댓글 document 까지 가는 docuRef
                 .collection("reply").document(replyInfo.getDocumentId())
@@ -133,8 +140,14 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
            public void onSuccess(DocumentSnapshot documentSnapshot) {
                FirebaseUserModel fm=documentSnapshot.toObject(FirebaseUserModel.class);
                assert fm != null;
-               String str=fm.getUserNickName()+"\n"+"("+fm.getNickname()+")";
+               Log.d("댓글시간",replyInfo.getDate().toString());
+               String date2=replyInfo.getDate().toString().substring(11,13);//시간부분
+               int hour=(Integer.parseInt(date2)+9)%24;
+               String finaldate=String.valueOf(hour)+replyInfo.getDate().toString().substring(13,16);
+               Log.d("홈 댓글시간",finaldate);
+               String str=fm.getUserNickName()+"("+fm.getNickname()+")\n"+finaldate;
                holder.mNickname.setText(str);
+
            }
        });
        holder.mLikebutton.setOnLikeListener(new OnLikeListener() {
@@ -233,8 +246,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                                             InputMethodManager imm = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
                                             assert imm != null;
                                             imm.hideSoftInputFromWindow(textInputEditText_temp.getWindowToken(), 0);
-                                            //TODO 어댑터 설정...
+
                                             retreiveReplyInReply(replyInreplyRef.getParent(),holder,position);
+                                           // scrollView.smoothScrollTo(0,holder.mContent.getBottom());
 
                                         }
                                     });
@@ -258,6 +272,13 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                 ad.show();
             }
         });
+        String dateTime2 = new Date().toString();
+        String dateTime = replyInfo.getDate().toString().substring(4, 10);
+        Log.d("date1", dateTime);
+        if (dateTime2.substring(4, 10).equals(dateTime)) {
+            holder.mN.setVisibility(View.VISIBLE);
+        }
+
 
     }
 
@@ -304,6 +325,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         private TextView mLikecount;
         private ImageView mReplyimage;
         private RecyclerView mRecyclerView;
+        private ImageView mN;
 
 
 
@@ -317,6 +339,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             mReplyimage=itemView.findViewById(R.id.item_reply);
             loadingbar=new ProgressDialog(mContext);
             mRecyclerView=itemView.findViewById(R.id.item_replytoreply_recyclerView);
+            mN=itemView.findViewById(R.id.reply_new);
             itemView.setOnClickListener(new View.OnClickListener() {//클릭했을때
                 @Override
                 public void onClick(View v) {//들어가는 기능 detail로

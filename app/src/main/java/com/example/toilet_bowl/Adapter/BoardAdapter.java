@@ -139,8 +139,10 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         //올린시간 가져오기
         String date = boardInfo.getDate().toString();
         String date1 = date.substring(11, 16);
-        String date2 = date.substring(0, 13) + " " + date.substring(30, 34);
-        holder.mCreatedAt.setText(date1);
+        String date2=date.substring(11,13);//시간부분
+        int hour=(Integer.parseInt(date2)+9)%24;
+        String finaldate=String.valueOf(hour)+date.substring(13,16);
+        holder.mCreatedAt.setText(finaldate);
         String dateTime2 = new Date().toString();
         String dateTime = dateTime2.substring(4, 10);
         Log.d("date1", dateTime);
