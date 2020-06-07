@@ -4,9 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.toilet_bowl.Main.MainActivity;
@@ -35,13 +40,26 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private SignInButton loginbtn_google;//구글 로그인 버튼
     private FirebaseAuth mAuth;//파이어 베이스 인증 객체
     private GoogleApiClient googleApiClient;//구글 API 클라이언트 객체
     private static final int REQ_SIGN_GOOGLE=100;//구글 로그인 결과 코드
     CallbackManager callbackManager = CallbackManager.Factory.create();
+    private FirebaseFirestore mStore=FirebaseFirestore.getInstance();
+
+    //새로 등록된 로그인파일들
+    private EditText editTextEmail;
+    private EditText editTextPassword;
+    private Button buttonSignin;
+    private TextView textviewSingin;
+    private TextView textviewMessage;
+    private TextView textviewFindPassword;
+    private ProgressDialog progressDialog;
+
 
 
     @Override
@@ -92,7 +110,77 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 // App code
             }
         });
+        //새로 생긴 회원가입
+        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
+        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        textviewSingin= (TextView) findViewById(R.id.textViewSignin);
+        textviewMessage = (TextView) findViewById(R.id.textviewMessage);
+        textviewFindPassword = (TextView) findViewById(R.id.textViewFindpassword);
+        buttonSignin = (Button) findViewById(R.id.buttonSignup);
+        progressDialog = new ProgressDialog(this);
+        //button click event
+        buttonSignin.setOnClickListener(this);
+        textviewSingin.setOnClickListener(this);
+        textviewFindPassword.setOnClickListener(this);
 
+    }
+    @Override
+    public void onClick(View view) {
+        if(view == buttonSignin) {
+            userLogin();
+        }
+        if(view == textviewSingin) {
+            finish();
+            startActivity(new Intent(this, SignupActivity.class));
+        }
+        if(view == textviewFindPassword) {
+            finish();
+            startActivity(new Intent(this, FindActivity.class));
+        }
+    }
+    private void userLogin(){
+        String email = editTextEmail.getText().toString().trim();
+        String password = editTextPassword.getText().toString().trim();
+
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(this, "email을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(password)){
+            Toast.makeText(this, "password를 입력해 주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        progressDialog.setMessage("로그인중입니다. 잠시 기다려 주세요...");
+        progressDialog.show();
+
+        //logging in the user
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressDialog.dismiss();
+                        if(task.isSuccessful()) {
+                            finish();
+                            mStore.collection("users").document(mAuth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if(document.exists()){
+                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    }else
+                                    {
+                                        startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                                    }
+                                }
+                            });
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "로그인 실패!", Toast.LENGTH_LONG).show();
+                            textviewMessage.setText("로그인 실패 유형\n - password가 맞지 않습니다.\n -서버에러");
+                        }
+                    }
+                });
     }
     @Override
     public void onStart() {
@@ -115,8 +203,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         finish();
     }
     private void updateUI_facebook(FirebaseUser currentUser) {//페이스북 로그인 성공시. 물론 자동로그인 아님
-        Intent intent=new Intent(LoginActivity.this, StartActivity.class);
-        startActivity(intent);
+
+        mStore.collection("users").document(mAuth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if(document.exists()){
+                    Intent intent=new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }else{
+                    Intent intent=new Intent(getApplicationContext(), StartActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
         finish();
     }
     @Override
@@ -132,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    private void resultLogin(final GoogleSignInAccount account) {
+    private void resultLogin(final GoogleSignInAccount account) {//구글로그인
         AuthCredential credential= GoogleAuthProvider.getCredential(account.getIdToken(),null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -140,10 +240,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                       if(task.isSuccessful()){//로그인 이 성공
                           Toast.makeText(LoginActivity.this,"로그인성공",Toast.LENGTH_LONG).show();
-                          Intent intent=new Intent(getApplicationContext(), StartActivity.class);
-                         // intent.putExtra("nickName",account.getDisplayName());
-                         // intent.putExtra("photoURL",String.valueOf(account.getPhotoUrl()));
-                          startActivity(intent);
+                          mStore.collection("users").document(mAuth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                              @Override
+                              public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                  DocumentSnapshot document = task.getResult();
+                                  if(document.exists()){
+                                      Intent intent=new Intent(getApplicationContext(), MainActivity.class);
+                                      startActivity(intent);
+                                  }else{
+                                      Intent intent=new Intent(getApplicationContext(), StartActivity.class);
+                                      startActivity(intent);
+                                  }
+
+                              }
+                          });
+
                       }else {//로그인이 실패
                           Toast.makeText(LoginActivity.this,"로그인실패",Toast.LENGTH_LONG).show();
                       }
@@ -180,4 +291,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
+
+
 }

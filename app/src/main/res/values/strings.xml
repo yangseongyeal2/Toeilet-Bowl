@@ -13,6 +13,9 @@
 
     <string name="facebook_app_id">285805969126598</string>
     <string name="fb_login_protocol_scheme">fb285805969126598</string>
+    <string name="로그인">로그인</string>
+    <string name="신규회원가입">신규 회원가입</string>
+    <string name="비밀번호찾기">비밀번호가 기억나지 않습니까?</string>
 
 
 </resources>

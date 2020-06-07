@@ -49,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d("UID",FirebaseAuth.getInstance().getCurrentUser().getUid());
         Intent intent = getIntent();
         String UserNickName= intent.getStringExtra("UserNickName");
+        //sendUserInfoToServer(UserNickName);
+        //sendUserInfoToServer(UserNickName);
         if (UserNickName!= null) {
             sendUserInfoToServer(UserNickName);
         }
-        else {//자동로그인일 경우
+        else {//스타트 액티비티 안거치는 경우.
             if(FirebaseAuth.getInstance().getCurrentUser()!=null){
                 updateUserInfoToServer();
                 //sendUserInfoToServer(UserNickName);
