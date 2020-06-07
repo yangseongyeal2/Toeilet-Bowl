@@ -118,7 +118,10 @@ public class DetailActivity extends AppCompatActivity implements OnItemClick {
             documentReference = mStore.collection("Board").document(mDocumentId);
         }
         constraintLayout = new ConstraintLayout(this);
+
+
         //
+
         setContentView(R.layout.activity_detail);
         mTitle = findViewById(R.id.detail_title);
         mContent = findViewById(R.id.detail_content);

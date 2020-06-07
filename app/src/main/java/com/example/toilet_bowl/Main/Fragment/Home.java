@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -19,6 +20,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.toilet_bowl.Adapter.HomeAdapter;
 import com.example.toilet_bowl.Adapter.HomeAdapter2;
 import com.example.toilet_bowl.Board.DetailActivity;
+import com.example.toilet_bowl.Board.SerchActivity;
+import com.example.toilet_bowl.Login.LoginActivity;
 import com.example.toilet_bowl.R;
 import com.example.toilet_bowl.model.BoardInfo;
 import com.example.toilet_bowl.model.FirebaseUserModel;
@@ -53,6 +56,7 @@ public class Home extends Fragment {
     private TextView mNicknmae_Level;
 
 
+
     private final FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
     @Nullable
     @Override
@@ -78,15 +82,15 @@ public class Home extends Fragment {
                 transaction.commit();
             }
         });
-        swipeRefreshLayout=view.findViewById(R.id.item_home_refresh1);//새로고침기능
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                retreive_mypost();
-                retreive_waittingreply();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+//        swipeRefreshLayout=view.findViewById(R.id.item_home_refresh1);//새로고침기능 이게 필요할까 ??
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                retreive_mypost();
+//                retreive_waittingreply();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
         mNicknmae_Level=view.findViewById(R.id.home_userNickName_level);
         mStore.collection("users").document(mFirebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -98,10 +102,37 @@ public class Home extends Fragment {
             }
         });
 
-
+        view.findViewById(R.id.home_logout).setOnClickListener(new View.OnClickListener() {//로그아웃기능
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
+        view.findViewById(R.id.home_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retreive_mypost();
+                retreive_waittingreply();
+            }
+        });
+        view.findViewById(R.id.home_serch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), SerchActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         return view;
+    }
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(Home.this).commit();
+        fragmentManager.popBackStack();
+
     }
 
     private void retreive_mypost(){

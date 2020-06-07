@@ -57,11 +57,12 @@
 
     <Button
         android:id="@+id/Board_logoutBtn"
-        android:layout_width="78dp"
-        android:layout_height="37dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/로그아웃"
+        app:layout_constraintEnd_toStartOf="@+id/Board_profileURL"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

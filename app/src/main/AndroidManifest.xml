@@ -12,8 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             tools:replace="android:value"
@@ -33,7 +31,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".Main.MainActivity"></activity>
+        <activity android:name=".Main.MainActivity"/>
         <activity android:name=".Start.StartActivity" />
         <activity
             android:name=".Start.SplashActivity"
@@ -46,7 +44,8 @@
         <activity android:name=".Board.SerchActivity" />
         <activity
             android:name=".Board.DetailActivity"
-            android:parentActivityName=".Main.MainActivity">
+            android:parentActivityName=".Main.MainActivity"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Login.LoginActivity" />

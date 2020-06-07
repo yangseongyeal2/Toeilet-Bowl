@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.example.toilet_bowl.Adapter.BoardAdapter;
@@ -52,6 +53,10 @@ public class SerchActivity extends AppCompatActivity implements OnItemClick {
             public void onClick(View v) {
                 String content=mTextInputEditText.getText().toString();
                 retriveSerch(content);
+                mTextInputEditText.setText("");
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                assert imm != null;
+                imm.hideSoftInputFromWindow(mTextInputEditText.getWindowToken(), 0);
             }
         });
 

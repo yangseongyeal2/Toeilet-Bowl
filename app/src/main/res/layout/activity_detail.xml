@@ -149,7 +149,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/edittext_login"
-            android:padding="3dp">
+            android:padding="3dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            >
 
         </com.google.android.material.textfield.TextInputEditText>
     </com.google.android.material.textfield.TextInputLayout>
@@ -177,6 +180,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/edittext_login"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+
             android:padding="3dp">
 
         </com.google.android.material.textfield.TextInputEditText>
