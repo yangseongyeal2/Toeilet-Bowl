@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String UserNickName= intent.getStringExtra("UserNickName");
         //sendUserInfoToServer(UserNickName);
-        //sendUserInfoToServer(UserNickName);
+         sendUserInfoToServer(UserNickName);
         if (UserNickName!= null) {
             sendUserInfoToServer(UserNickName);
         }

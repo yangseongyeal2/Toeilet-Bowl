@@ -6,29 +6,15 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="시간실험" />
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="25e48ff5-50fd-4305-843e-51f76ee89109" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_facebook_android_facebook_common_4_42_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_facebook_android_facebook_common_4_42_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_facebook_android_facebook_core_4_42_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_facebook_android_facebook_core_4_42_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_facebook_android_facebook_login_4_42_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_facebook_android_facebook_login_4_42_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_facebook_android_facebook_share_4_42_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_facebook_android_facebook_share_4_42_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_firebaseui_firebase_ui_auth_4_2_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_firebaseui_firebase_ui_auth_4_2_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_jd_alexander_LikeButton_0_2_3_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_jd_alexander_LikeButton_0_2_3_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jackandphantom_android_androidlikebutton_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jackandphantom_android_androidlikebutton_1_2_0_aar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/BoardAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/BoardAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/HomeAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/HomeAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/HomeAdapter2.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/HomeAdapter2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/NotificationAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/NotificationAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/ReplyAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/ReplyAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/ReplytoreplyAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Adapter/ReplytoreplyAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Login/SignupActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Login/SignupActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Main/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/toilet_bowl/Main/MainActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,7 +266,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591548557345</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="시간오류 잡음">
+      <created>1591584540838</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1591584540839</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -311,7 +304,8 @@
     <MESSAGE value="업데이트" />
     <MESSAGE value="노티피케이션 푸쉬" />
     <MESSAGE value="사진" />
-    <option name="LAST_COMMIT_MESSAGE" value="사진" />
+    <MESSAGE value="시간오류 잡음" />
+    <option name="LAST_COMMIT_MESSAGE" value="시간오류 잡음" />
   </component>
   <component name="WindowStateProjectService">
     <state x="676" y="164" key="#app" timestamp="1591282348657">
@@ -322,10 +316,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591535777796" />
-    <state x="676" y="164" key="#git" timestamp="1591584432476">
+    <state x="676" y="164" key="#git" timestamp="1591603260869">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="676" y="164" key="#git/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591584432476" />
+    <state x="676" y="164" key="#git/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591603260869" />
     <state x="676" y="164" key="#git/0.0.1920.1040@0.0.1920.1040" timestamp="1591549443195" />
     <state x="540" y="275" key="AndroidCreateResourceFileDialog" timestamp="1591549128648">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -335,44 +329,44 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="817" y="332" key="AndroidCreateXmlResourceDialog/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591523998742" />
-    <state x="476" y="77" key="CommitChangelistDialog2" timestamp="1591548556553">
+    <state x="476" y="77" key="CommitChangelistDialog2" timestamp="1591584539523">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="476" y="77" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591545827270" />
+    <state x="476" y="77" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591584539523" />
     <state x="476" y="77" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1591548556553" />
     <state x="1356" y="225" key="FileChooserDialogImpl" timestamp="1591546494905">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1356" y="225" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591546494905" />
-    <state width="1877" height="280" key="GridCell.Tab.0.bottom" timestamp="1591541190510">
+    <state width="1860" height="277" key="GridCell.Tab.0.bottom" timestamp="1591602999404">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="280" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541190510" />
-    <state width="1877" height="280" key="GridCell.Tab.0.center" timestamp="1591541190510">
+    <state width="1860" height="277" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591602999404" />
+    <state width="1860" height="277" key="GridCell.Tab.0.center" timestamp="1591602999404">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="280" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541190510" />
-    <state width="1877" height="280" key="GridCell.Tab.0.left" timestamp="1591541190510">
+    <state width="1860" height="277" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591602999404" />
+    <state width="1860" height="277" key="GridCell.Tab.0.left" timestamp="1591602999404">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="280" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541190510" />
-    <state width="1877" height="280" key="GridCell.Tab.0.right" timestamp="1591541190510">
+    <state width="1860" height="277" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591602999404" />
+    <state width="1860" height="277" key="GridCell.Tab.0.right" timestamp="1591602999404">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="280" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591541190510" />
-    <state x="552" y="241" key="Vcs.Push.Dialog.v2" timestamp="1591548558898">
+    <state width="1860" height="277" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591602999404" />
+    <state x="552" y="241" key="Vcs.Push.Dialog.v2" timestamp="1591584546692">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="241" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591545830148" />
+    <state x="552" y="241" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591584546692" />
     <state x="552" y="241" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1591548558898" />
     <state x="99" y="91" width="1736" height="856" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1591531519567">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="99" y="91" width="1736" height="856" key="com.android.tools.idea.avdmanager.AvdListDialog/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591531519567" />
-    <state x="652" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1591582951586">
+    <state x="652" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1591602991280">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="652" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591582951586" />
+    <state x="652" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/1920.0.1366.728@0.0.1920.1040" timestamp="1591602991280" />
     <state x="652" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1591548425568" />
     <state x="1920" y="0" width="1382" height="815" key="dock-window-1" timestamp="1591549918650">
       <screen x="1920" y="0" width="1366" height="728" />

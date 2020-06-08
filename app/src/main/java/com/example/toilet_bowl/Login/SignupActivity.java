@@ -87,7 +87,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             finish();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            startActivity(new Intent(getApplicationContext(), StartActivity.class));
                         } else {
                             //에러발생시
                             textviewMessage.setText("회원가입에 실패했습니다. \n\n - 이미 등록된 이메일  \n - 암호 최소 6자리 이상");
