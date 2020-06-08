@@ -140,8 +140,17 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         String date = boardInfo.getDate().toString();
         String date1 = date.substring(11, 16);
         String date2=date.substring(11,13);//시간부분
-        int hour=(Integer.parseInt(date2)+9)%24;
-        String finaldate=String.valueOf(hour)+date.substring(13,16);
+        int flag=Integer.parseInt(date2);
+        int hour=0;
+//        if(flag>=12){
+//            hour =(Integer.parseInt(date2)+9)%24;
+//            Log.d("시간실험(오후)",String.valueOf(date));
+//        }else {
+//           hour=flag;
+//            Log.d("시간실험(오전)",String.valueOf(date));
+//        }
+       // String finaldate=String.valueOf(hour)+date.substring(13,16);
+        String finaldate=date1;
         holder.mCreatedAt.setText(finaldate);
         String dateTime2 = new Date().toString();
         String dateTime = dateTime2.substring(4, 10);

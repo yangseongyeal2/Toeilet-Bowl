@@ -59,7 +59,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         String date1 = date.substring(11, 16);
         String date2 = date.substring(11, 13);//시간부분
         int hour = (Integer.parseInt(date2) + 9) % 24;
-        String finaldate = String.valueOf(hour) + date.substring(13, 16);
+        //String finaldate = String.valueOf(hour) + date.substring(13, 16);
+        String finaldate=date1;
         holder.mDate.setText(finaldate);
         String dateTime2 = new Date().toString();
         String dateTime = dateTime2.substring(4, 10);

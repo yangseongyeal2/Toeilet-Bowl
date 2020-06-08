@@ -59,7 +59,8 @@ public class HomeAdapter2 extends RecyclerView.Adapter<HomeAdapter2.HomeAdapter2
         String date1=date.substring(11,16);
         String date2=date.substring(11,13);//시간부분
         int hour=(Integer.parseInt(date2)+9)%24;
-        String finaldate=String.valueOf(hour)+date.substring(13,16);
+        //String finaldate=String.valueOf(hour)+date.substring(13,16);
+        String finaldate=date1;
         Log.d("홈 댓글시간",finaldate);
         //String date2=date.substring(0,13)+" "+date.substring(30,34);
         holder.mCreated_at.setText(finaldate);

@@ -89,9 +89,12 @@ public class ReplytoreplyAdapter extends RecyclerView.Adapter<ReplytoreplyAdapte
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         FirebaseUserModel fm=documentSnapshot.toObject(FirebaseUserModel.class);
                         assert fm != null;
+                        String date=replyInfo.getDate().toString();
+                        String date1=date.substring(11,16);
                         String date2=replyInfo.getDate().toString().substring(11,13);//시간부분
                         int hour=(Integer.parseInt(date2)+9)%24;
-                        String finaldate=String.valueOf(hour)+replyInfo.getDate().toString().substring(13,16);
+                        //String finaldate=String.valueOf(hour)+replyInfo.getDate().toString().substring(13,16);
+                        String finaldate=date1;
                         Log.d("홈 댓글시간",finaldate);
                         String str=fm.getUserNickName()+"("+fm.getNickname()+")\n"+finaldate;
                         holder.mNickname.setText(str);
